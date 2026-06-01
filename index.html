@@ -3,9 +3,87 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Patina - Fine Art Collection.</title>
+  <title>Patina — Art Collection</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script type="module" src="./src/js/script.js"></script>
 </head>
 <body>
-  
+
+  <!-- ===================== NAVBAR ===================== -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <div class="navbar__inner flex-between">
+        <a href="/" class="navbar__brand">Patina</a>
+        <!-- <div class="navbar__status" id="navbarStatus">
+          <span class="navbar__status-dot"></span>
+          <span class="navbar__status-text">Museum at Night &nbsp;·&nbsp; Curator Online</span>
+        </div> -->
+        <div class="navbar__search" id="navbarSearch">
+          <label for="navSearch" class="search-label search-label--compact">
+            <i data-lucide="search"></i>
+            <input type="search" id="navSearch" placeholder="Search museum..." autocomplete="off" />
+          </label>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero__content">
+        <h1 class="hero__heading">Discover the world's greatest art</h1>
+        <p class="hero__sub">A lantern walk through historical brushwork, symbolism, and dynamic audio-visual curatorial guides.</p>
+        <div class="hero__search">
+          <label for="heroSearch" class="search-label search-label--hero">
+            <i data-lucide="search"></i>
+            <input type="search" id="heroSearch" placeholder="Search artists, paintings, movements, mediums..." autocomplete="off" />
+          </label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== GALLERY ===================== -->
+  <section class="gallery" id="gallery">
+    <div class="container">
+
+      <!-- Filter Bar -->
+      <div class="filter-bar" id="filterBar">
+        <button class="filter-bar__icon" aria-label="Filter options">
+          <i data-lucide="funnel"></i>
+        </button>
+        <div class="filter-bar__pills" role="list">
+          <button class="filter-pill filter-pill--active" data-filter="all" role="listitem">All</button>
+          <button class="filter-pill" data-filter="paintings" role="listitem">Paintings</button>
+          <button class="filter-pill" data-filter="sculptures" role="listitem">Sculptures</button>
+          <button class="filter-pill" data-filter="impressionism" role="listitem">Impressionism</button>
+          <button class="filter-pill" data-filter="renaissance" role="listitem">Renaissance</button>
+          <button class="filter-pill" data-filter="modern" role="listitem">Modern</button>
+          <button class="filter-pill" data-filter="baroque" role="listitem">Baroque</button>
+          <button class="filter-pill" data-filter="contemporary" role="listitem">Contemporary</button>
+        </div>
+      </div>
+
+      <!-- Masonry Grid — JS populates real cards, skeletons show until data loads -->
+      <div class="masonry-grid" id="masonryGrid">
+        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:320px"></div></div>
+        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:200px"></div></div>
+        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:280px"></div></div>
+        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:240px"></div></div>
+        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:360px"></div></div>
+        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:180px"></div></div>
+        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:300px"></div></div>
+        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:220px"></div></div>
+        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:260px"></div></div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    lucide.createIcons();
+  </script>
+
 </body>
 </html>

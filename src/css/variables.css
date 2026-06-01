@@ -27,24 +27,24 @@
 
 
 /* --- Typography --- */
---font-heading: 'Gambeta', Georgia, serif;
+--font-heading: 'Gambetta', Georgia, serif;
 --font-body: 'Satoshi', system-ui, -apple-system, sans-serif;
 
 --fs-xs: 0.6875rem;
 --fs-sm: 0.8125rem;
---fse-base: 1rem;
+--fs-base: 1rem;
 --fs-md: 1.125rem;
 --fs-lg: 1.25rem;
 --fs-xl: 1.5rem;
 --fs-2xl: 2rem;
 --fs-3xl: 2.5rem;
---fse-4xl: 3.5rem;
+--fs-4xl: 3.5rem;
 --fs-display: 4.5rem;
 
 
 --fw-light: 300;
 --fw-regular: 400;
---fwt-medium: 500;
+--fw-medium: 500;
 --fw-semibold: 600;
 --fw-bold: 700;
 
@@ -92,15 +92,15 @@
 
 
 /* --- Transitions --- */
---transition-fast: 0.2s;
---transition-normal: 0.4s;
---transition-slow: 0.8s;
+--duration-fast: 0.2s;
+--duration-normal: 0.4s;
+--duration-slow: 0.8s;
 --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
 --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 --ease-in: cubic-bezier(0.4, 0, 1, 1);
---transition-fast: var(--transition-fast-duration) var(--ease-standard);
---transition-normal: var(--transition-normal-duration) var(--ease-out-expo);
---transition-slow: var(--transition-slow-duration) var(--ease-out-expo);
+--transition-fast: var(--duration-fast) var(--ease-standard);
+--transition-normal: var(--duration-normal) var(--ease-out-expo);
+--transition-slow: var(--duration-slow) var(--ease-out-expo);
 
 
 /* --- Z-Index Scale --- */

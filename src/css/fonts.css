@@ -4,170 +4,170 @@
 
 @font-face {
   font-family: 'Gambetta';
-  src: url('/public/assets/fonts/Gambetta-Light.woff2') format('woff2'),
-       url('/public/assets/fonts/Gambetta-Light.woff') format('woff');
+  src: url('/assets/fonts/Gambetta-Light.woff2') format('woff2'),
+       url('/assets/fonts/Gambetta-Light.woff') format('woff');
   font-weight: 300;
   font-style: normal;
 }
 @font-face {
   font-family: 'Gambetta';
-  src: url('/public/assets/fonts/Gambetta-LightItalic.woff2') format('woff2'),
-       url('/public/assets/fonts/Gambetta-LightItalic.woff') format('woff');
+  src: url('/assets/fonts/Gambetta-LightItalic.woff2') format('woff2'),
+       url('/assets/fonts/Gambetta-LightItalic.woff') format('woff');
   font-weight: 300;
   font-style: italic;
 }
 @font-face {
   font-family: 'Gambetta';
-  src: url('/public/assets/fonts/Gambetta-Regular.woff2') format('woff2'),
-       url('/public/assets/fonts/Gambetta-Regular.woff') format('woff');
+  src: url('/assets/fonts/Gambetta-Regular.woff2') format('woff2'),
+       url('/assets/fonts/Gambetta-Regular.woff') format('woff');
   font-weight: 400;
   font-style: normal;
 }
 @font-face {
   font-family: 'Gambetta';
-  src: url('/public/assets/fonts/Gambetta-Italic.woff2') format('woff2'),
-       url('/public/assets/fonts/Gambetta-Italic.woff') format('woff');
+  src: url('/assets/fonts/Gambetta-Italic.woff2') format('woff2'),
+       url('/assets/fonts/Gambetta-Italic.woff') format('woff');
   font-weight: 400;
   font-style: italic;
 }
 @font-face {
   font-family: 'Gambetta';
-  src: url('/public/assets/fonts/Gambetta-Medium.woff2') format('woff2'),
-       url('/public/assets/fonts/Gambetta-Medium.woff') format('woff');
+  src: url('/assets/fonts/Gambetta-Medium.woff2') format('woff2'),
+       url('/assets/fonts/Gambetta-Medium.woff') format('woff');
   font-weight: 500;
   font-style: normal;
 }
 @font-face {
   font-family: 'Gambetta';
-  src: url('/public/assets/fonts/Gambetta-MediumItalic.woff2') format('woff2'),
-       url('/public/assets/fonts/Gambetta-MediumItalic.woff') format('woff');
+  src: url('/assets/fonts/Gambetta-MediumItalic.woff2') format('woff2'),
+       url('/assets/fonts/Gambetta-MediumItalic.woff') format('woff');
   font-weight: 500;
   font-style: italic;
 }
 @font-face {
   font-family: 'Gambetta';
-  src: url('/public/assets/fonts/Gambetta-Semibold.woff2') format('woff2'),
-       url('/public/assets/fonts/Gambetta-Semibold.woff') format('woff');
+  src: url('/assets/fonts/Gambetta-Semibold.woff2') format('woff2'),
+       url('/assets/fonts/Gambetta-Semibold.woff') format('woff');
   font-weight: 600;
   font-style: normal;
 }
 @font-face {
   font-family: 'Gambetta';
-  src: url('/public/assets/fonts/Gambetta-SemiboldItalic.woff2') format('woff2'),
-       url('/public/assets/fonts/Gambetta-SemiboldItalic.woff') format('woff');
+  src: url('/assets/fonts/Gambetta-SemiboldItalic.woff2') format('woff2'),
+       url('/assets/fonts/Gambetta-SemiboldItalic.woff') format('woff');
   font-weight: 600;
   font-style: italic;
 }
 @font-face {
   font-family: 'Gambetta';
-  src: url('/public/assets/fonts/Gambetta-Bold.woff2') format('woff2'),
-       url('/public/assets/fonts/Gambetta-Bold.woff') format('woff');
+  src: url('/assets/fonts/Gambetta-Bold.woff2') format('woff2'),
+       url('/assets/fonts/Gambetta-Bold.woff') format('woff');
   font-weight: 700;
   font-style: normal;
 }
 @font-face {
   font-family: 'Gambetta';
-  src: url('/public/assets/fonts/Gambetta-BoldItalic.woff2') format('woff2'),
-       url('/public/assets/fonts/Gambetta-BoldItalic.woff') format('woff');
+  src: url('/assets/fonts/Gambetta-BoldItalic.woff2') format('woff2'),
+       url('/assets/fonts/Gambetta-BoldItalic.woff') format('woff');
   font-weight: 700;
   font-style: italic;
 }
 @font-face {
   font-family: 'Gambetta';
-  src: url('/public/assets/fonts/Gambetta-Variable.woff2') format('woff2-variations'),
-       url('/public/assets/fonts/Gambetta-Variable.woff') format('woff');
+  src: url('/assets/fonts/Gambetta-Variable.woff2') format('woff2-variations'),
+       url('/assets/fonts/Gambetta-Variable.woff') format('woff');
   font-weight: 300 850;
   font-style: normal;
 }
 @font-face {
   font-family: 'Gambetta';
-  src: url('/public/assets/fonts/Gambetta-VariableItalic.woff2') format('woff2-variations'),
-       url('/public/assets/fonts/Gambetta-VariableItalic.woff') format('woff');
+  src: url('/assets/fonts/Gambetta-VariableItalic.woff2') format('woff2-variations'),
+       url('/assets/fonts/Gambetta-VariableItalic.woff') format('woff');
   font-weight: 300 850;
   font-style: italic;
 }
 
 @font-face {
   font-family: 'Satoshi';
-  src: url('/public/assets/fonts/Satoshi-Light.woff2') format('woff2'),
-       url('/public/assets/fonts/Satoshi-Light.woff') format('woff');
+  src: url('/assets/fonts/Satoshi-Light.woff2') format('woff2'),
+       url('/assets/fonts/Satoshi-Light.woff') format('woff');
   font-weight: 300;
   font-style: normal;
 }
 @font-face {
   font-family: 'Satoshi';
-  src: url('/public/assets/fonts/Satoshi-LightItalic.woff2') format('woff2'),
-       url('/public/assets/fonts/Satoshi-LightItalic.woff') format('woff');
+  src: url('/assets/fonts/Satoshi-LightItalic.woff2') format('woff2'),
+       url('/assets/fonts/Satoshi-LightItalic.woff') format('woff');
   font-weight: 300;
   font-style: italic;
 }
 @font-face {
   font-family: 'Satoshi';
-  src: url('/public/assets/fonts/Satoshi-Regular.woff2') format('woff2'),
-       url('/public/assets/fonts/Satoshi-Regular.woff') format('woff');
+  src: url('/assets/fonts/Satoshi-Regular.woff2') format('woff2'),
+       url('/assets/fonts/Satoshi-Regular.woff') format('woff');
   font-weight: 400;
   font-style: normal;
 }
 @font-face {
   font-family: 'Satoshi';
-  src: url('/public/assets/fonts/Satoshi-Italic.woff2') format('woff2'),
-       url('/public/assets/fonts/Satoshi-Italic.woff') format('woff');
+  src: url('/assets/fonts/Satoshi-Italic.woff2') format('woff2'),
+       url('/assets/fonts/Satoshi-Italic.woff') format('woff');
   font-weight: 400;
   font-style: italic;
 }
 @font-face {
   font-family: 'Satoshi';
-  src: url('/public/assets/fonts/Satoshi-Medium.woff2') format('woff2'),
-       url('/public/assets/fonts/Satoshi-Medium.woff') format('woff');
+  src: url('/assets/fonts/Satoshi-Medium.woff2') format('woff2'),
+       url('/assets/fonts/Satoshi-Medium.woff') format('woff');
   font-weight: 500;
   font-style: normal;
 }
 @font-face {
   font-family: 'Satoshi';
-  src: url('/public/assets/fonts/Satoshi-MediumItalic.woff2') format('woff2'),
-       url('/public/assets/fonts/Satoshi-MediumItalic.woff') format('woff');
+  src: url('/assets/fonts/Satoshi-MediumItalic.woff2') format('woff2'),
+       url('/assets/fonts/Satoshi-MediumItalic.woff') format('woff');
   font-weight: 500;
   font-style: italic;
 }
 @font-face {
   font-family: 'Satoshi';
-  src: url('/public/assets/fonts/Satoshi-Bold.woff2') format('woff2'),
-       url('/public/assets/fonts/Satoshi-Bold.woff') format('woff');
+  src: url('/assets/fonts/Satoshi-Bold.woff2') format('woff2'),
+       url('/assets/fonts/Satoshi-Bold.woff') format('woff');
   font-weight: 700;
   font-style: normal;
 }
 @font-face {
   font-family: 'Satoshi';
-  src: url('/public/assets/fonts/Satoshi-BoldItalic.woff2') format('woff2'),
-       url('/public/assets/fonts/Satoshi-BoldItalic.woff') format('woff');
+  src: url('/assets/fonts/Satoshi-BoldItalic.woff2') format('woff2'),
+       url('/assets/fonts/Satoshi-BoldItalic.woff') format('woff');
   font-weight: 700;
   font-style: italic;
 }
 @font-face {
   font-family: 'Satoshi';
-  src: url('/public/assets/fonts/Satoshi-Black.woff2') format('woff2'),
-       url('/public/assets/fonts/Satoshi-Black.woff') format('woff');
+  src: url('/assets/fonts/Satoshi-Black.woff2') format('woff2'),
+       url('/assets/fonts/Satoshi-Black.woff') format('woff');
   font-weight: 900;
   font-style: normal;
 }
 @font-face {
   font-family: 'Satoshi';
-  src: url('/public/assets/fonts/Satoshi-BlackItalic.woff2') format('woff2'),
-       url('/public/assets/fonts/Satoshi-BlackItalic.woff') format('woff');
+  src: url('/assets/fonts/Satoshi-BlackItalic.woff2') format('woff2'),
+       url('/assets/fonts/Satoshi-BlackItalic.woff') format('woff');
   font-weight: 900;
   font-style: italic;
 }
 @font-face {
   font-family: 'Satoshi';
-  src: url('/public/assets/fonts/Satoshi-Variable.woff2') format('woff2-variations'),
-       url('/public/assets/fonts/Satoshi-Variable.woff') format('woff');
+  src: url('/assets/fonts/Satoshi-Variable.woff2') format('woff2-variations'),
+       url('/assets/fonts/Satoshi-Variable.woff') format('woff');
   font-weight: 300 900;
   font-style: normal;
 }
 @font-face {
   font-family: 'Satoshi';
-  src: url('/public/assets/fonts/Satoshi-VariableItalic.woff2') format('woff2-variations'),
-       url('/public/assets/fonts/Satoshi-VariableItalic.woff') format('woff');
+  src: url('/assets/fonts/Satoshi-VariableItalic.woff2') format('woff2-variations'),
+       url('/assets/fonts/Satoshi-VariableItalic.woff') format('woff');
   font-weight: 300 900;
   font-style: italic;
 }
