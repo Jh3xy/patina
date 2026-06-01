@@ -7,6 +7,7 @@ import "../css/style.css";
 // JS modules
 import { supabase, db } from "./supabase.js";
 import { getCachedArtworks, searchCached, fetchByDepartment } from "./cache.js";
+import { fetchByDepartment } from "./api.js";
 import { renderGrid } from "./masonry.js";
 import "./modal.js";
 
