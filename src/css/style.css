@@ -1,11 +1,12 @@
-
 /* Main Stylesheet */
 
 /* ============================================================
    BASE & RESET
    ============================================================ */
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -31,12 +32,16 @@ body {
   overflow-x: hidden;
 }
 
-
 /* ============================================================
    TYPOGRAPHY
    ============================================================ */
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   font-weight: var(--fw-semibold);
   line-height: var(--lh-tight);
@@ -44,12 +49,24 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-text-primary);
 }
 
-h1 { font-size: var(--fs-display); }
-h2 { font-size: var(--fs-4xl); }
-h3 { font-size: var(--fs-3xl); }
-h4 { font-size: var(--fs-2xl); }
-h5 { font-size: var(--fs-xl); }
-h6 { font-size: var(--fs-lg); }
+h1 {
+  font-size: var(--fs-display);
+}
+h2 {
+  font-size: var(--fs-4xl);
+}
+h3 {
+  font-size: var(--fs-3xl);
+}
+h4 {
+  font-size: var(--fs-2xl);
+}
+h5 {
+  font-size: var(--fs-xl);
+}
+h6 {
+  font-size: var(--fs-lg);
+}
 
 p {
   color: var(--color-text-secondary);
@@ -61,7 +78,6 @@ small {
   font-size: var(--fs-sm);
   color: var(--color-text-muted);
 }
-
 
 /* ============================================================
    LINKS
@@ -77,12 +93,12 @@ a:hover {
   color: var(--color-accent);
 }
 
-
 /* ============================================================
    IMAGES & MEDIA
    ============================================================ */
 
-img, video {
+img,
+video {
   display: block;
   max-width: 100%;
   height: auto;
@@ -91,7 +107,6 @@ img, video {
 img {
   object-fit: cover;
 }
-
 
 /* ============================================================
    BUTTONS
@@ -121,12 +136,13 @@ button:disabled {
   pointer-events: none;
 }
 
-
 /* ============================================================
    INPUTS
    ============================================================ */
 
-input, textarea, select {
+input,
+textarea,
+select {
   font-family: var(--font-body);
   font-size: var(--fs-base);
   color: var(--color-text-primary);
@@ -134,27 +150,31 @@ input, textarea, select {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
   outline: none;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   border-color: var(--color-border-accent);
   box-shadow: var(--shadow-glow);
 }
 
-input::placeholder, textarea::placeholder {
+input::placeholder,
+textarea::placeholder {
   color: var(--color-text-muted);
 }
-
 
 /* ============================================================
    LISTS
    ============================================================ */
 
-ul, ol {
+ul,
+ol {
   list-style: none;
 }
-
 
 /* ============================================================
    SELECTION
@@ -165,7 +185,6 @@ ul, ol {
   color: var(--color-accent);
 }
 
-
 /* ============================================================
    FOCUS VISIBLE
    ============================================================ */
@@ -175,7 +194,6 @@ ul, ol {
   outline-offset: 3px;
   border-radius: var(--radius-sm);
 }
-
 
 /* ============================================================
    SCROLLBAR
@@ -198,7 +216,6 @@ ul, ol {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-accent-subtle);
 }
-
 
 /* ============================================================
    UTILITY — LAYOUT WRAPPERS
@@ -224,18 +241,25 @@ ul, ol {
     padding-inline: var(--space-md);
   }
 
-  h1 { font-size: var(--fs-4xl); }
-  h2 { font-size: var(--fs-3xl); }
-  h3 { font-size: var(--fs-2xl); }
+  h1 {
+    font-size: var(--fs-4xl);
+  }
+  h2 {
+    font-size: var(--fs-3xl);
+  }
+  h3 {
+    font-size: var(--fs-2xl);
+  }
 }
 
 @media (max-width: 480px) {
-  h1 { font-size: var(--fs-3xl); }
-  h2 { font-size: var(--fs-2xl); }
+  h1 {
+    font-size: var(--fs-3xl);
+  }
+  h2 {
+    font-size: var(--fs-2xl);
+  }
 }
-
-
-
 
 /* ============================================================
    NAVBAR
@@ -320,8 +344,15 @@ ul, ol {
 }
 
 @keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.75); }
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.75);
+  }
 }
 
 /* Compact search — hidden in hero state, shows when sticky */
@@ -339,7 +370,6 @@ ul, ol {
   transform: translateY(0);
   pointer-events: all;
 }
-
 
 /* ============================================================
    SEARCH LABELS
@@ -360,7 +390,7 @@ ul, ol {
 
 .search-label:focus-within {
   border-color: var(--color-border-accent);
-  box-shadow: var(--shadow-glow);
+  /* box-shadow: var(--shadow-glow); */
 }
 
 .search-label svg {
@@ -409,7 +439,6 @@ ul, ol {
 .search-label--compact input {
   font-size: var(--fs-sm);
 }
-
 
 /* ============================================================
    HERO
@@ -482,7 +511,6 @@ ul, ol {
   }
 }
 
-
 /* ============================================================
    FILTER BAR
    ============================================================ */
@@ -490,6 +518,7 @@ ul, ol {
 .filter-bar {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-md);
   padding-block: var(--space-md);
   border-bottom: 1px solid var(--color-border);
@@ -564,7 +593,6 @@ ul, ol {
   color: #121212;
 }
 
-
 /* ============================================================
    GALLERY & MASONRY GRID
    ============================================================ */
@@ -574,13 +602,14 @@ ul, ol {
 }
 
 .masonry-grid {
-  display: block; 
+  display: block;
   width: 100%;
   margin-top: var(--space-xl);
 }
 
 /* Fluid column sizing element: 3 Columns on desktop */
-.art-card, .grid-sizer {
+.art-card,
+.grid-sizer {
   width: calc((100% - (2 * var(--layout-grid-gap))) / 3);
 }
 
@@ -589,17 +618,18 @@ ul, ol {
 }
 
 @media (max-width: 900px) {
-  .art-card, .grid-sizer {
+  .art-card,
+  .grid-sizer {
     width: calc((100% - var(--layout-grid-gap)) / 2);
   }
 }
 
 @media (max-width: 560px) {
-  .art-card, .grid-sizer {
+  .art-card,
+  .grid-sizer {
     width: 100%;
   }
 }
-
 
 /* ============================================================
    ART CARD
@@ -612,7 +642,9 @@ ul, ol {
   border-radius: var(--radius-md);
   overflow: hidden;
   background-color: var(--color-bg-secondary);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .art-card:hover {
@@ -682,7 +714,6 @@ ul, ol {
   max-width: none;
 }
 
-
 /* ============================================================
    SKELETON LOADING
    ============================================================ */
@@ -712,10 +743,13 @@ ul, ol {
 }
 
 @keyframes skeleton-shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
-
 
 /* ============================================================
    SCROLL FADE-UP ANIMATION
@@ -740,7 +774,6 @@ ul, ol {
   opacity: 1;
   transform: none;
 }
-
 
 /* ============================================================
    ARTWORK MODAL
@@ -924,7 +957,7 @@ body.modal-is-open {
 .art-modal__note {
   margin-top: var(--space-2xl);
   padding: var(--space-lg);
-  border-left: 1px solid var(--color-accent);
+  /* border-left: 1px solid var(--color-accent); */
   border-radius: var(--radius-md);
   background: rgba(201, 168, 76, 0.06);
 }
@@ -1009,13 +1042,16 @@ body.modal-is-open {
 }
 
 .art-modal__inquiries button {
-  max-width: 100%;
+  max-width: 90%;
+  font-weight: var(--fw-regular);
+  text-transform: unset;
   padding: var(--space-xs) var(--space-sm);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
   background: transparent;
   color: var(--color-text-secondary);
   font-size: var(--fs-xs);
+  text-align: start;
 }
 
 .art-modal__ask {
@@ -1168,4 +1204,47 @@ body.modal-is-open {
   }
 }
 
+/* ============================================================
+   SCROLL TO TOP BUTTON
+   Small circular button fixed to bottom-right
+   ============================================================ */
 
+.scroll-top {
+  position: fixed;
+  right: var(--space-lg);
+  bottom: var(--space-lg);
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  color: var(--color-accent);
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition:
+    transform var(--transition-fast),
+    opacity var(--transition-fast);
+  z-index: calc(var(--z-sticky) + 10);
+}
+
+.scroll-top.is-visible {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-top:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+@media (max-width: 480px) {
+  .scroll-top {
+    right: var(--space-md);
+    bottom: var(--space-md);
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}

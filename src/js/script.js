@@ -118,7 +118,7 @@ heroSearch.addEventListener("input", (e) => {
 
   searchTimeout = setTimeout(() => {
     performSearch(query);
-  }, 300); // 300ms debounce
+  }, 200); // 200ms debounce
 });
 
 navSearch.addEventListener("input", (e) => {
@@ -127,7 +127,7 @@ navSearch.addEventListener("input", (e) => {
 
   searchTimeout = setTimeout(() => {
     performSearch(query);
-  }, 300);
+  }, 200);
 });
 
 /* ============================================================
@@ -138,11 +138,53 @@ navSearch.addEventListener("input", (e) => {
 (async () => {
   try {
     const artworks = await getCachedArtworks();
+    console.log("Loaded featured artworks from cache:", artworks);
     renderGrid(artworks);
   } catch (err) {
     console.error("Failed to load featured artworks:", err);
   }
 })();
+
+/* ============================================================
+   SCROLL-TO-TOP BUTTON
+   Shows when the page is scrolled past the hero section
+   ============================================================ */
+
+function createScrollTopButton() {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "scroll-top";
+  btn.setAttribute("aria-label", "Scroll to top");
+  btn.innerHTML = '<i data-lucide="arrow-up"></i>';
+
+  btn.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  document.body.appendChild(btn);
+  window.lucide?.createIcons();
+
+  const threshold = () => (hero ? hero.offsetHeight : window.innerHeight / 2);
+
+  function updateVisibility() {
+    const btnEl = document.querySelector(".scroll-top");
+    if (!btnEl) return;
+
+    if (window.scrollY > threshold()) {
+      btnEl.classList.add("is-visible");
+    } else {
+      btnEl.classList.remove("is-visible");
+    }
+  }
+
+  window.addEventListener("scroll", updateVisibility, { passive: true });
+  window.addEventListener("resize", updateVisibility);
+
+  // initial visibility
+  updateVisibility();
+}
+
+createScrollTopButton();
 
 // Export so other modules can call it after rendering new cards
 export { observeCards };
