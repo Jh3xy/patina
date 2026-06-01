@@ -8,6 +8,7 @@ import "../css/style.css";
 
 // JS modules
 import { supabase, db } from "./supabase.js";
+import "./modal.js";
 
 /* ============================================================
    STICKY NAVBAR

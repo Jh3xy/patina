@@ -164,9 +164,9 @@ export function reinitMasonry() {
 
   masonryInstance = new Masonry(grid, {
     itemSelector: ".art-card:not(.art-card--skeleton)",
-    columnWidth: cardWidth,
-    gutter: getGridGap(),
-    percentPosition: false,
+    columnWidth: ".grid-sizer",
+    gutter: ".gutter-sizer",
+    percentPosition: true,
     transitionDuration: "0.25s",
   });
 
