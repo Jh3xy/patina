@@ -574,20 +574,35 @@ ul, ol {
 }
 
 .masonry-grid {
-  columns: 3;
-  column-gap: var(--layout-grid-gap);
+  display: block; 
+  width: 100%;
   margin-top: var(--space-xl);
+}
+
+/* Fluid column sizing element: 3 Columns on desktop */
+.art-card, .grid-sizer {
+  width: calc((100% - (2 * var(--layout-grid-gap))) / 3);
+}
+
+.gutter-sizer {
+  width: var(--layout-grid-gap);
 }
 
 @media (max-width: 900px) {
   .masonry-grid {
     columns: 2;
   }
+  .art-card, .grid-sizer {
+    width: calc((100% - var(--layout-grid-gap)) / 2);
+  }
 }
 
 @media (max-width: 560px) {
   .masonry-grid {
     columns: 1;
+  }
+  .art-card, .grid-sizer {
+    width: 100%;
   }
 }
 

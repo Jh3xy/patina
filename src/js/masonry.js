@@ -22,57 +22,6 @@ function getArtworkId(artwork) {
   return artwork.id || artwork.source_id || "";
 }
 
-function getColumnCount() {
-  if (window.matchMedia("(max-width: 560px)").matches) {
-    return 1;
-  }
-
-  if (window.matchMedia("(max-width: 900px)").matches) {
-    return 2;
-  }
-
-  return 3;
-}
-
-function getGridGap() {
-  if (!grid) {
-    return DEFAULT_GAP;
-  }
-
-  const styles = getComputedStyle(grid);
-  const cssGap = parseFloat(styles.columnGap || styles.gap);
-
-  return Number.isFinite(cssGap) ? cssGap : DEFAULT_GAP;
-}
-
-function getCardWidth() {
-  if (!grid) {
-    return 0;
-  }
-
-  const columns = getColumnCount();
-  const gap = getGridGap();
-  const gridWidth = grid.clientWidth;
-
-  return Math.max(1, Math.floor((gridWidth - gap * (columns - 1)) / columns));
-}
-
-function sizeCards() {
-  if (!grid) {
-    return 0;
-  }
-
-  const cardWidth = getCardWidth();
-
-  grid.style.columns = "initial";
-
-  grid.querySelectorAll(".art-card:not(.art-card--skeleton)").forEach((card) => {
-    card.style.width = `${cardWidth}px`;
-  });
-
-  return cardWidth;
-}
-
 function getArtworkDataFromCard(card) {
   return {
     id: card.dataset.id || "",
@@ -213,8 +162,6 @@ export function reinitMasonry() {
 
   destroyMasonry();
 
-  const cardWidth = sizeCards();
-
   masonryInstance = new Masonry(grid, {
     itemSelector: ".art-card:not(.art-card--skeleton)",
     columnWidth: cardWidth,
@@ -243,7 +190,12 @@ export function renderGrid(artworks = []) {
     return;
   }
 
-  grid.innerHTML = visibleArtworks.map(createCardMarkup).join("");
+  const sizerMarkup = `
+    <div class="grid-sizer"></div>
+    <div class="gutter-sizer"></div>
+  `;
+
+  grid.innerHTML = sizerMarkup + visibleArtworks.map(createCardMarkup).join("");
 
   bindGridClickHandler();
   bindResizeHandler();
