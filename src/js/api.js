@@ -4,8 +4,9 @@ const MET_BASE_URL = "https://collectionapi.metmuseum.org/public/collection/v1";
 const AIC_BASE_URL = "https://api.artic.edu/api/v1";
 
 const DEFAULT_LIMIT = 24;
-const MET_DETAIL_LIMIT = 18;
+const MET_DETAIL_LIMIT = 15;
 const AIC_IMAGE_SIZE = "843,";
+const AIC_IIIF_FALLBACK_URL = "https://www.artic.edu/iiif/2";
 
 const AIC_FIELDS = [
   "id",
@@ -101,7 +102,9 @@ function getAicImageUrl(artwork, iiifUrl) {
     return "";
   }
 
-  return `${iiifUrl}/${artwork.image_id}/full/${AIC_IMAGE_SIZE}/0/default.jpg`;
+  const cleanIiifUrl = iiifUrl.replace(/\/$/, "");
+
+  return `${cleanIiifUrl}/${artwork.image_id}/full/${AIC_IMAGE_SIZE}/0/default.jpg`;
 }
 
 function normalizeAicArtwork(artwork, iiifUrl) {
@@ -147,22 +150,24 @@ async function fetchMetArtworks(query, limit = DEFAULT_LIMIT) {
   });
 
   const searchData = await fetchJsonSafely(searchUrl);
-  const objectIds = searchData?.objectIDs?.slice(0, MET_DETAIL_LIMIT) || [];
+  const objectIds = searchData?.objectIDs || [];
 
   if (!objectIds.length) {
     return [];
   }
 
-  const detailRequests = objectIds.map((objectId) => {
+  return fetchMetDetailsBatch(objectIds, Math.min(limit, MET_DETAIL_LIMIT));
+}
+
+async function fetchMetDetailsBatch(objectIds, limit = MET_DETAIL_LIMIT) {
+  const targetIds = objectIds.slice(0, limit);
+  const detailRequests = targetIds.map((objectId) => {
     return fetchJsonSafely(`${MET_BASE_URL}/objects/${objectId}`);
   });
 
   const details = await Promise.all(detailRequests);
 
-  return details
-    .map(normalizeMetArtwork)
-    .filter(Boolean)
-    .slice(0, limit);
+  return details.map(normalizeMetArtwork).filter(Boolean);
 }
 
 async function fetchAicArtworks(query, limit = DEFAULT_LIMIT) {
@@ -174,7 +179,7 @@ async function fetchAicArtworks(query, limit = DEFAULT_LIMIT) {
   });
 
   const searchData = await fetchJsonSafely(searchUrl);
-  const iiifUrl = searchData?.config?.iiif_url;
+  const iiifUrl = searchData?.config?.iiif_url || AIC_IIIF_FALLBACK_URL;
 
   return (searchData?.data || [])
     .map((artwork) => normalizeAicArtwork(artwork, iiifUrl))

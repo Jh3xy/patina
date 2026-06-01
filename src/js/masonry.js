@@ -1,0 +1,253 @@
+
+
+import Masonry from "masonry-layout";
+import { observeCards } from "./script.js";
+
+const grid = document.getElementById("masonryGrid");
+const DEFAULT_GAP = 24;
+
+let masonryInstance = null;
+let resizeTimer = null;
+
+function escapeHtml(value = "") {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function getArtworkId(artwork) {
+  return artwork.id || artwork.source_id || "";
+}
+
+function getColumnCount() {
+  if (window.matchMedia("(max-width: 560px)").matches) {
+    return 1;
+  }
+
+  if (window.matchMedia("(max-width: 900px)").matches) {
+    return 2;
+  }
+
+  return 3;
+}
+
+function getGridGap() {
+  if (!grid) {
+    return DEFAULT_GAP;
+  }
+
+  const styles = getComputedStyle(grid);
+  const cssGap = parseFloat(styles.columnGap || styles.gap);
+
+  return Number.isFinite(cssGap) ? cssGap : DEFAULT_GAP;
+}
+
+function getCardWidth() {
+  if (!grid) {
+    return 0;
+  }
+
+  const columns = getColumnCount();
+  const gap = getGridGap();
+  const gridWidth = grid.clientWidth;
+
+  return Math.max(1, Math.floor((gridWidth - gap * (columns - 1)) / columns));
+}
+
+function sizeCards() {
+  if (!grid) {
+    return 0;
+  }
+
+  const cardWidth = getCardWidth();
+
+  grid.style.columns = "initial";
+
+  grid.querySelectorAll(".art-card:not(.art-card--skeleton)").forEach((card) => {
+    card.style.width = `${cardWidth}px`;
+  });
+
+  return cardWidth;
+}
+
+function getArtworkDataFromCard(card) {
+  return {
+    id: card.dataset.id || "",
+    source: card.dataset.source || "",
+    source_id: card.dataset.sourceId || "",
+    title: card.dataset.title || "",
+    artist: card.dataset.artist || "",
+    department: card.dataset.department || "",
+    medium: card.dataset.medium || "",
+    artwork_date: card.dataset.artworkDate || "",
+    image_url: card.dataset.imageUrl || "",
+    dominant_color: card.dataset.dominantColor || "",
+  };
+}
+
+function createCardMarkup(artwork) {
+  const id = escapeHtml(getArtworkId(artwork));
+  const source = escapeHtml(artwork.source);
+  const sourceId = escapeHtml(artwork.source_id);
+  const title = escapeHtml(artwork.title || "Untitled");
+  const artist = escapeHtml(artwork.artist || "Unknown artist");
+  const department = escapeHtml(artwork.department);
+  const medium = escapeHtml(artwork.medium);
+  const artworkDate = escapeHtml(artwork.artwork_date);
+  const imageUrl = escapeHtml(artwork.image_url);
+  const dominantColor = escapeHtml(artwork.dominant_color);
+
+  return `
+    <div
+      class="art-card"
+      data-id="${id}"
+      data-source="${source}"
+      data-source-id="${sourceId}"
+      data-title="${title}"
+      data-artist="${artist}"
+      data-department="${department}"
+      data-medium="${medium}"
+      data-artwork-date="${artworkDate}"
+      data-image-url="${imageUrl}"
+      data-dominant-color="${dominantColor}"
+    >
+      <div class="art-card__img-wrap">
+        <img src="${imageUrl}" alt="${title}" class="art-card__img" loading="lazy" />
+        <div class="art-card__overlay"><i data-lucide="expand"></i></div>
+      </div>
+      <div class="art-card__info">
+        <h3 class="art-card__title">${title}</h3>
+        <p class="art-card__artist">${artist}</p>
+      </div>
+    </div>
+  `;
+}
+
+function renderEmptyState() {
+  if (!grid) {
+    return;
+  }
+
+  grid.innerHTML = '<p class="gallery-empty">No artworks found.</p>';
+}
+
+function bindImageLayoutUpdates() {
+  if (!grid || !masonryInstance) {
+    return;
+  }
+
+  grid.querySelectorAll(".art-card__img").forEach((image) => {
+    if (image.complete) {
+      masonryInstance.layout();
+      return;
+    }
+
+    image.addEventListener(
+      "load",
+      () => {
+        masonryInstance?.layout();
+      },
+      { once: true },
+    );
+  });
+}
+
+function bindGridClickHandler() {
+  if (!grid || grid.dataset.clickBound === "true") {
+    return;
+  }
+
+  grid.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) {
+      return;
+    }
+
+    const card = event.target.closest(".art-card:not(.art-card--skeleton)");
+
+    if (!card || !grid.contains(card)) {
+      return;
+    }
+
+    grid.dispatchEvent(
+      new CustomEvent("patina:artwork-select", {
+        bubbles: true,
+        detail: getArtworkDataFromCard(card),
+      }),
+    );
+  });
+
+  grid.dataset.clickBound = "true";
+}
+
+function bindResizeHandler() {
+  if (!grid || grid.dataset.resizeBound === "true") {
+    return;
+  }
+
+  window.addEventListener("resize", () => {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(() => {
+      reinitMasonry();
+    }, 150);
+  });
+
+  grid.dataset.resizeBound = "true";
+}
+
+function destroyMasonry() {
+  if (!masonryInstance) {
+    return;
+  }
+
+  masonryInstance.destroy();
+  masonryInstance = null;
+}
+
+export function reinitMasonry() {
+  if (!grid) {
+    return null;
+  }
+
+  destroyMasonry();
+
+  const cardWidth = sizeCards();
+
+  masonryInstance = new Masonry(grid, {
+    itemSelector: ".art-card:not(.art-card--skeleton)",
+    columnWidth: cardWidth,
+    gutter: getGridGap(),
+    percentPosition: false,
+    transitionDuration: "0.25s",
+  });
+
+  bindImageLayoutUpdates();
+  masonryInstance.layout();
+
+  return masonryInstance;
+}
+
+export function renderGrid(artworks = []) {
+  if (!grid) {
+    return;
+  }
+
+  destroyMasonry();
+
+  const visibleArtworks = artworks.filter((artwork) => artwork?.image_url);
+
+  if (!visibleArtworks.length) {
+    renderEmptyState();
+    return;
+  }
+
+  grid.innerHTML = visibleArtworks.map(createCardMarkup).join("");
+
+  bindGridClickHandler();
+  bindResizeHandler();
+  reinitMasonry();
+  observeCards();
+  window.lucide?.createIcons();
+}
