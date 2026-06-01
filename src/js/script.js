@@ -1,5 +1,3 @@
-
-
 // Stylesheets
 import "../css/fonts.css";
 import "../css/variables.css";
@@ -8,6 +6,8 @@ import "../css/style.css";
 
 // JS modules
 import { supabase, db } from "./supabase.js";
+import { getCachedArtworks, searchCached, fetchByDepartment } from "./cache.js";
+import { renderGrid } from "./masonry.js";
 import "./modal.js";
 
 /* ============================================================
@@ -49,15 +49,23 @@ navSearch.addEventListener("input", (e) => {
 
 /* ============================================================
    FILTER PILLS
-   Active state toggle — actual filtering wired up in cache.js later
+   Active state toggle + fetch artworks by department
    ============================================================ */
 
 const filterPills = document.querySelectorAll(".filter-pill");
 
 filterPills.forEach((pill) => {
-  pill.addEventListener("click", () => {
+  pill.addEventListener("click", async () => {
     filterPills.forEach((p) => p.classList.remove("filter-pill--active"));
     pill.classList.add("filter-pill--active");
+
+    const dept = pill.getAttribute("data-filter") || "all";
+    const artworks =
+      dept === "all"
+        ? await getCachedArtworks()
+        : await fetchByDepartment(dept);
+
+    renderGrid(artworks);
   });
 });
 
@@ -91,6 +99,49 @@ function observeCards() {
 
 observeCards();
 
+/* ============================================================
+   SEARCH WIRING
+   Debounced search on input → searchCached() → renderGrid()
+   ============================================================ */
+
+let searchTimeout;
+
+async function performSearch(query) {
+  const artworks = await searchCached(query);
+  renderGrid(artworks);
+}
+
+heroSearch.addEventListener("input", (e) => {
+  clearTimeout(searchTimeout);
+  const query = e.target.value.trim();
+
+  searchTimeout = setTimeout(() => {
+    performSearch(query);
+  }, 300); // 300ms debounce
+});
+
+navSearch.addEventListener("input", (e) => {
+  clearTimeout(searchTimeout);
+  const query = e.target.value.trim();
+
+  searchTimeout = setTimeout(() => {
+    performSearch(query);
+  }, 300);
+});
+
+/* ============================================================
+   INITIAL DATA LOAD
+   Fetch featured artworks on page load and render grid
+   ============================================================ */
+
+(async () => {
+  try {
+    const artworks = await getCachedArtworks();
+    renderGrid(artworks);
+  } catch (err) {
+    console.error("Failed to load featured artworks:", err);
+  }
+})();
 
 // Export so other modules can call it after rendering new cards
 export { observeCards };
