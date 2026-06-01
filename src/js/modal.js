@@ -5,6 +5,10 @@ import { searchCached, updateDominantColor } from "./cache.js";
 
 const MODAL_ID = "artModal";
 const FALLBACK_COLOR = "#121212";
+const COLLECTION_LABELS = {
+  met: "Metropolitan Museum of Art",
+  aic: "Art Institute of Chicago",
+};
 
 let modal = null;
 let activeArtwork = null;
@@ -32,6 +36,10 @@ function normalizeArtwork(artwork = {}) {
     image_url: artwork.image_url || "",
     dominant_color: artwork.dominant_color || "",
   };
+}
+
+function getCollectionLabel(source) {
+  return COLLECTION_LABELS[source] || "Museum collection";
 }
 
 function rgbToHex([r, g, b]) {
@@ -132,6 +140,57 @@ function renderMetadataItem(label, value) {
   `;
 }
 
+function renderArtworkNote(artwork) {
+  const collection = getCollectionLabel(artwork.source);
+  const details = [artwork.artwork_date, artwork.medium, artwork.department]
+    .filter(Boolean)
+    .join(" / ");
+
+  return `
+    <section class="art-modal__note">
+      <p>
+        ${escapeHtml(artwork.title)} is shown from the ${escapeHtml(collection)} record${details ? `, with available details listed as ${escapeHtml(details)}` : ""}.
+      </p>
+    </section>
+  `;
+}
+
+function renderCuratorPanel(artwork) {
+  const title = artwork.title || "this work";
+  const mediumQuestion = artwork.medium
+    ? `How does the medium shape ${title}?`
+    : `What should I notice first in ${title}?`;
+  const departmentQuestion = artwork.department
+    ? `What does ${artwork.department} tell us about this work?`
+    : `What themes appear in ${title}?`;
+
+  return `
+    <section class="art-modal__curator" aria-label="Curator chat">
+      <div class="art-modal__curator-header">
+        <span><i data-lucide="sparkles"></i> Curator's Bureau (AI)</span>
+        <span class="art-modal__status-dot" aria-hidden="true"></span>
+      </div>
+      <div class="art-modal__curator-body">
+        <div class="art-modal__curator-message">
+          <p>I can help explore ${escapeHtml(title)} through its beauty, symbolism, technique, and historical context.</p>
+        </div>
+        <div class="art-modal__inquiries">
+          <p>Suggested inquiries</p>
+          <button type="button">${escapeHtml(`What is the story behind ${title}?`)}</button>
+          <button type="button">${escapeHtml(mediumQuestion)}</button>
+          <button type="button">${escapeHtml(departmentQuestion)}</button>
+        </div>
+        <form class="art-modal__ask" aria-label="Ask the curator">
+          <input type="text" placeholder="Ask the Curator about this masterpiece..." disabled />
+          <button type="button" aria-label="Send curator question" disabled>
+            <i data-lucide="send"></i>
+          </button>
+        </form>
+      </div>
+    </section>
+  `;
+}
+
 function renderRelatedArtworks(artworks) {
   if (!artworks.length) {
     return "";
@@ -149,8 +208,8 @@ function renderRelatedArtworks(artworks) {
     .join("");
 
   return `
-    <section class="art-modal__related" aria-label="More from this artist">
-      <h3>More from this artist</h3>
+    <section class="art-modal__related" aria-label="Suggested masterpieces">
+      <h3><i data-lucide="compass"></i> Suggested Masterpieces</h3>
       <div class="art-modal__related-track">${items}</div>
     </section>
   `;
@@ -236,6 +295,8 @@ async function applyDominantColor(artwork) {
 
 function renderModal(artwork, relatedArtworks = []) {
   const targetModal = ensureModal();
+  const collection = getCollectionLabel(artwork.source);
+  const context = [artwork.department, collection].filter(Boolean).join(" / ");
 
   targetModal.innerHTML = `
     <div class="art-modal__backdrop" data-modal-close></div>
@@ -244,25 +305,33 @@ function renderModal(artwork, relatedArtworks = []) {
         <i data-lucide="x"></i>
       </button>
 
-      <div class="art-modal__content">
-        <figure class="art-modal__image-frame">
-          <img src="${escapeHtml(artwork.image_url)}" alt="${escapeHtml(artwork.title)}" class="art-modal__image" />
-        </figure>
+      <div class="art-modal__layout">
+        <aside class="art-modal__visual">
+          <figure class="art-modal__image-frame">
+            <img src="${escapeHtml(artwork.image_url)}" alt="${escapeHtml(artwork.title)}" class="art-modal__image" />
+          </figure>
+          <p class="art-modal__caption">${escapeHtml(artwork.title)} displayed under museum lighting</p>
+        </aside>
 
-        <div class="art-modal__details">
-          <p class="art-modal__source">${escapeHtml(artwork.source || "collection")}</p>
-          <h2>${escapeHtml(artwork.title)}</h2>
-          <p class="art-modal__artist">${escapeHtml(artwork.artist)}</p>
+        <div class="art-modal__narrative">
+          <div class="art-modal__details">
+            <p class="art-modal__source">${escapeHtml(context || "collection")}</p>
+            <h2>${escapeHtml(artwork.title)}</h2>
+            <p class="art-modal__artist">${escapeHtml(artwork.artist)}</p>
 
-          <dl class="art-modal__metadata">
-            ${renderMetadataItem("Date", artwork.artwork_date)}
-            ${renderMetadataItem("Medium", artwork.medium)}
-            ${renderMetadataItem("Department", artwork.department)}
-          </dl>
+            <dl class="art-modal__metadata">
+              ${renderMetadataItem("Date Created", artwork.artwork_date)}
+              ${renderMetadataItem("Medium", artwork.medium)}
+              ${renderMetadataItem("Department", artwork.department)}
+              ${renderMetadataItem("Collection", collection)}
+            </dl>
+
+            ${renderArtworkNote(artwork)}
+            ${renderCuratorPanel(artwork)}
+            ${renderRelatedArtworks(relatedArtworks)}
+          </div>
         </div>
       </div>
-
-      ${renderRelatedArtworks(relatedArtworks)}
     </div>
   `;
 
