@@ -1,4 +1,3 @@
-
 import { searchCached, updateDominantColor } from "./cache.js";
 
 const MODAL_ID = "artModal";
@@ -11,6 +10,7 @@ const COLLECTION_LABELS = {
 let modal = null;
 let activeArtwork = null;
 let lastFocusedElement = null;
+let chatHistory = [];
 
 function escapeHtml(value = "") {
   return String(value ?? "")
@@ -164,6 +164,7 @@ function renderCuratorPanel(artwork) {
         <div class="art-modal__curator-message">
           <p>I can help explore ${escapeHtml(title)} through its beauty, symbolism, technique, and historical context.</p>
         </div>
+        <div class="art-modal__chat-log" aria-live="polite"></div>
         <div class="art-modal__inquiries">
           <p>Suggested inquiries</p>
           <button type="button">${escapeHtml(`What is the story behind ${title}?`)}</button>
@@ -172,13 +173,154 @@ function renderCuratorPanel(artwork) {
         </div>
         <form class="art-modal__ask" aria-label="Ask the curator">
           <input type="text" placeholder="Ask the Curator about this masterpiece..." />
-          <button type="button" aria-label="Send curator question" disabled>
+          <button type="submit" aria-label="Send curator question" disabled>
             <i data-lucide="send"></i>
           </button>
         </form>
       </div>
     </section>
   `;
+}
+
+function createChatBubble(text, role) {
+  const row = document.createElement("div");
+  row.className = `art-modal__chat-row art-modal__chat-row--${role}`;
+  row.style.display = "flex";
+  row.style.justifyContent = role === "user" ? "flex-end" : "flex-start";
+  row.style.marginBottom = "0.75rem";
+
+  const bubble = document.createElement("div");
+  bubble.className = `art-modal__chat-bubble art-modal__chat-bubble--${role}`;
+  bubble.textContent = text;
+  bubble.style.maxWidth = "80%";
+  bubble.style.padding = "0.85rem 1rem";
+  bubble.style.borderRadius = "1rem";
+  bubble.style.background =
+    role === "user" ? "rgba(255,255,255,0.16)" : "rgba(255,255,255,0.08)";
+  bubble.style.color = "#fff";
+  bubble.style.whiteSpace = "pre-wrap";
+  bubble.style.wordBreak = "break-word";
+
+  row.appendChild(bubble);
+  return row;
+}
+
+function createTypingIndicator() {
+  const row = document.createElement("div");
+  row.className = "art-modal__chat-row art-modal__chat-row--typing";
+  row.style.display = "flex";
+  row.style.justifyContent = "flex-start";
+  row.style.marginBottom = "0.75rem";
+
+  const indicator = document.createElement("div");
+  indicator.className = "art-modal__chat-typing";
+  indicator.textContent = "Curator is typing...";
+  indicator.style.padding = "0.75rem 1rem";
+  indicator.style.borderRadius = "1rem";
+  indicator.style.background = "rgba(255,255,255,0.08)";
+  indicator.style.color = "#e8e8e8";
+  indicator.style.fontStyle = "italic";
+
+  row.appendChild(indicator);
+  return row;
+}
+
+function scrollChatToBottom(chatLog) {
+  if (!chatLog) {
+    return;
+  }
+
+  chatLog.scrollTo({
+    top: chatLog.scrollHeight,
+    behavior: "smooth",
+  });
+}
+
+function initCuratorChat(artwork) {
+  const targetModal = ensureModal();
+  const chatLog = targetModal.querySelector(".art-modal__chat-log");
+  const form = targetModal.querySelector(".art-modal__ask");
+  const input = form?.querySelector("input");
+  const button = form?.querySelector("button[type='submit']");
+
+  if (!form || !input || !button || !chatLog) {
+    return;
+  }
+
+  button.disabled = true;
+
+  input.addEventListener("input", () => {
+    button.disabled = !input.value.trim();
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const messageText = input.value.trim();
+    if (!messageText) {
+      return;
+    }
+
+    const inquiries = targetModal.querySelector(".art-modal__inquiries");
+    if (inquiries) {
+      inquiries.remove();
+    }
+
+    const userRow = createChatBubble(messageText, "user");
+    chatLog.appendChild(userRow);
+    chatHistory.push({ role: "user", content: messageText });
+
+    const typingIndicator = createTypingIndicator();
+    chatLog.appendChild(typingIndicator);
+    scrollChatToBottom(chatLog);
+
+    input.disabled = true;
+    button.disabled = true;
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: messageText,
+          history: chatHistory,
+          activeArtwork: artwork,
+        }),
+      });
+
+      const payload = await response.json();
+      const aiText =
+        typeof payload?.text === "string"
+          ? payload.text
+          : "I’m here to help, please try again.";
+
+      if (typingIndicator.parentNode) {
+        typingIndicator.remove();
+      }
+
+      const aiRow = createChatBubble(aiText, "assistant");
+      chatLog.appendChild(aiRow);
+      chatHistory.push({ role: "assistant", content: aiText });
+    } catch (error) {
+      if (typingIndicator.parentNode) {
+        typingIndicator.remove();
+      }
+
+      const errorRow = createChatBubble(
+        "Something went wrong while I was composing a response. Try again in a moment.",
+        "assistant",
+      );
+      chatLog.appendChild(errorRow);
+    } finally {
+      input.value = "";
+      input.disabled = false;
+      button.disabled = true;
+      input.focus();
+      scrollChatToBottom(chatLog);
+    }
+  });
 }
 
 function renderRelatedArtworks(artworks) {
@@ -307,6 +449,8 @@ async function openRelatedArtwork(sourceId) {
 
 export async function openModal(artworkData) {
   const targetModal = ensureModal();
+  chatHistory = [];
+
   const artwork = await hydrateArtwork(artworkData);
   const relatedArtworks = await getRelatedArtworks(artwork);
 
@@ -314,6 +458,7 @@ export async function openModal(artworkData) {
   lastFocusedElement = document.activeElement;
 
   renderModal(artwork, relatedArtworks);
+  initCuratorChat(artwork);
 
   // Apply background — CSS-only, no canvas, no CORS
   setModalBackground(artwork.image_url, artwork.dominant_color);

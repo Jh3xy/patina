@@ -10,6 +10,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html {
@@ -1342,4 +1343,110 @@ body.modal-is-open {
   color: var(--color-text-muted);
   font-size: var(--fs-md);
   width: 100%;
+}
+
+
+/* ============================================================
+   PATINA GALLERY — CURATOR BOT LAYOUT STYLES 
+   ============================================================ */
+
+/* Chat layout body containment container */
+.art-modal__curator-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Scrollable window log area for message streaming */
+.art-modal__chat-log {
+  display: flex;
+  flex-direction: column;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: var(--space-xs);
+  scroll-behavior: smooth;
+}
+
+/* Custom crisp scrollbar layout indicators */
+.art-modal__chat-log::-webkit-scrollbar {
+  width: 4px;
+}
+.art-modal__chat-log::-webkit-scrollbar-track {
+  background: transparent;
+}
+.art-modal__chat-log::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+/* Individual flexible row alignment containers */
+.art-modal__chat-row {
+  display: flex;
+  width: 100%;
+  margin-bottom: var(--space-sm);
+  animation: chatFadeIn var(--transition-fast) ease-out forwards;
+}
+
+.art-modal__chat-row--user {
+  justify-content: flex-end;
+}
+
+.art-modal__chat-row--assistant,
+.art-modal__chat-row--typing {
+  justify-content: flex-start;
+}
+
+/* Shared structural micro-bubble styling */
+.art-modal__chat-bubble {
+  max-width: 85%;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* User Message: High Contrast alignment floats right */
+.art-modal__chat-bubble--user {
+  background: rgba(240, 237, 230, 0.12); /* Dynamic opacity mapping of var(--color-text-primary) */
+  color: var(--color-text-primary);
+  border-bottom-right-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+/* Assistant Message: Subtle muted anchor floats left */
+.art-modal__chat-bubble--assistant {
+  background: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+  border-bottom-left-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+/* Async Processing typing state notice markup indicator */
+.art-modal__chat-typing {
+  background: var(--color-bg-secondary);
+  color: var(--color-text-muted);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-lg);
+  border-bottom-left-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  font-size: var(--fs-sm);
+  font-style: italic;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+/* Smooth structural transition animation */
+@keyframes chatFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
