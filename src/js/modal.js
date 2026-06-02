@@ -253,6 +253,24 @@ function initCuratorChat(artwork) {
     button.disabled = !input.value.trim();
   });
 
+  targetModal
+    .querySelectorAll(".art-modal__inquiries button")
+    .forEach((suggestionButton) => {
+      suggestionButton.addEventListener("click", () => {
+        const buttonText = suggestionButton.textContent?.trim();
+
+        if (!buttonText) {
+          return;
+        }
+
+        input.value = buttonText;
+        button.disabled = false;
+        form.dispatchEvent(
+          new Event("submit", { cancelable: true, bubbles: true }),
+        );
+      });
+    });
+
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
