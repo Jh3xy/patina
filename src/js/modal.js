@@ -1,6 +1,4 @@
 
-
-import { getColor } from "colorthief";
 import { searchCached, updateDominantColor } from "./cache.js";
 
 const MODAL_ID = "artModal";
@@ -42,48 +40,35 @@ function getCollectionLabel(source) {
   return COLLECTION_LABELS[source] || "Museum collection";
 }
 
-function rgbToHex([r, g, b]) {
-  return [r, g, b]
-    .map((channel) => {
-      return Math.round(channel).toString(16).padStart(2, "0");
-    })
-    .join("")
-    .padStart(6, "0")
-    .replace(/^/, "#");
-}
+// ---------------------------------------------------------------------------
+// DOMINANT COLOR — CSS-only approach, zero CORS issues
+//
+// Instead of ColourThief's canvas pixel sampling (which breaks on cross-origin
+// images even with crossOrigin="anonymous" when the server doesn't echo the
+// right headers), we render the artwork image as a blurred, darkened CSS
+// background. Same visual effect, no security errors.
+// ---------------------------------------------------------------------------
 
-function hexToRgb(hex) {
-  const cleanHex = hex.replace("#", "");
+function setModalBackground(imageUrl, storedHex) {
+  const targetModal = ensureModal();
 
-  if (!/^[0-9a-f]{6}$/i.test(cleanHex)) {
-    return null;
+  if (storedHex && storedHex !== FALLBACK_COLOR) {
+    // We already know the color — use it directly
+    targetModal.style.setProperty("--modal-bg-color", storedHex);
+    targetModal.style.setProperty("--modal-bg-image", "none");
+  } else if (imageUrl) {
+    // Use the artwork itself as a blurred backdrop — looks great, no CORS
+    targetModal.style.setProperty("--modal-bg-color", FALLBACK_COLOR);
+    targetModal.style.setProperty("--modal-bg-image", `url(${imageUrl})`);
+  } else {
+    targetModal.style.setProperty("--modal-bg-color", FALLBACK_COLOR);
+    targetModal.style.setProperty("--modal-bg-image", "none");
   }
-
-  return [
-    parseInt(cleanHex.slice(0, 2), 16),
-    parseInt(cleanHex.slice(2, 4), 16),
-    parseInt(cleanHex.slice(4, 6), 16),
-  ];
 }
 
-function darkenRgb([r, g, b]) {
-  return [r, g, b].map((channel) => Math.round(channel * 0.35));
-}
-
-function rgbCss([r, g, b]) {
-  return `rgb(${r}, ${g}, ${b})`;
-}
-
-function loadImage(imageUrl) {
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-
-    image.crossOrigin = "anonymous";
-    image.onload = () => resolve(image);
-    image.onerror = reject;
-    image.src = imageUrl;
-  });
-}
+// ---------------------------------------------------------------------------
+// HYDRATION — fills in missing metadata from cache
+// ---------------------------------------------------------------------------
 
 async function hydrateArtwork(artwork) {
   const normalizedArtwork = normalizeArtwork(artwork);
@@ -105,7 +90,8 @@ async function hydrateArtwork(artwork) {
   const cachedMatches = await searchCached(query);
   const cachedArtwork = cachedMatches.find((item) => {
     return (
-      (normalizedArtwork.source_id && item.source_id === normalizedArtwork.source_id) ||
+      (normalizedArtwork.source_id &&
+        item.source_id === normalizedArtwork.source_id) ||
       (normalizedArtwork.id && String(item.id) === String(normalizedArtwork.id))
     );
   });
@@ -126,6 +112,10 @@ async function getRelatedArtworks(artwork) {
     .slice(0, 8)
     .map(normalizeArtwork);
 }
+
+// ---------------------------------------------------------------------------
+// RENDER HELPERS
+// ---------------------------------------------------------------------------
 
 function renderMetadataItem(label, value) {
   if (!value) {
@@ -215,6 +205,10 @@ function renderRelatedArtworks(artworks) {
   `;
 }
 
+// ---------------------------------------------------------------------------
+// MODAL LIFECYCLE
+// ---------------------------------------------------------------------------
+
 function ensureModal() {
   if (modal) {
     return modal;
@@ -253,64 +247,24 @@ function ensureModal() {
   return modal;
 }
 
-function setModalBackground(color) {
-  const targetModal = ensureModal();
-  const rgb = hexToRgb(color) || hexToRgb(FALLBACK_COLOR);
-  const darkened = darkenRgb(rgb);
-
-  targetModal.style.setProperty(
-    "--modal-gradient",
-    `linear-gradient(to bottom, ${rgbCss(darkened)}, ${FALLBACK_COLOR})`,
-  );
-}
-
-async function applyDominantColor(artwork) {
-  if (artwork.dominant_color) {
-    setModalBackground(artwork.dominant_color);
-    return;
-  }
-
-  try {
-    const image = await loadImage(artwork.image_url);
-    const color = await getColor(image, { quality: 10 });
-    const rgb = color?.array?.();
-
-    if (!rgb) {
-      setModalBackground(FALLBACK_COLOR);
-      return;
-    }
-
-    const hex = rgbToHex(rgb);
-
-    setModalBackground(hex);
-
-    if (artwork.id) {
-      await updateDominantColor(artwork.id, hex);
-    }
-  } catch (error) {
-    console.warn("Unable to extract dominant artwork color:", error);
-    setModalBackground(FALLBACK_COLOR);
-  }
-}
-
 function renderModal(artwork, relatedArtworks = []) {
   const targetModal = ensureModal();
   const collection = getCollectionLabel(artwork.source);
   const context = [artwork.department, collection].filter(Boolean).join(" / ");
 
   targetModal.innerHTML = `
-    <div class="art-modal__backdrop" data-modal-close></div>
-    <div class="art-modal__panel" tabindex="-1">
-      <button class="art-modal__close" type="button" aria-label="Close artwork details" data-modal-close>
-        <i data-lucide="x"></i>
-      </button>
-
-      <div class="art-modal__layout">
-        <aside class="art-modal__visual">
-          <figure class="art-modal__image-frame">
-            <img src="${escapeHtml(artwork.image_url)}" alt="${escapeHtml(artwork.title)}" class="art-modal__image" />
-          </figure>
-          <p class="art-modal__caption">${escapeHtml(artwork.title)} displayed under museum lighting</p>
+  <div class="art-modal__panel" tabindex="-1">
+  <button class="art-modal__close" type="button" aria-label="Close artwork details" data-modal-close>
+  <i data-lucide="x"></i>
+  </button>
+  
+  <div class="art-modal__layout">
+  <aside class="art-modal__visual">
+  <figure class="art-modal__image-frame">
+  <img src="${escapeHtml(artwork.image_url)}" alt="${escapeHtml(artwork.title)}" class="art-modal__image" />
+  </figure>
+  <p class="art-modal__caption">${escapeHtml(artwork.title)} displayed under museum lighting</p>
+  <div class="art-modal__backdrop" data-modal-close></div>
         </aside>
 
         <div class="art-modal__narrative">
@@ -360,14 +314,14 @@ export async function openModal(artworkData) {
   lastFocusedElement = document.activeElement;
 
   renderModal(artwork, relatedArtworks);
-  setModalBackground(artwork.dominant_color || FALLBACK_COLOR);
+
+  // Apply background — CSS-only, no canvas, no CORS
+  setModalBackground(artwork.image_url, artwork.dominant_color);
 
   targetModal.classList.add("art-modal--open");
   targetModal.setAttribute("aria-hidden", "false");
   document.body.classList.add("modal-is-open");
   targetModal.querySelector(".art-modal__panel")?.focus();
-
-  applyDominantColor(artwork);
 }
 
 export function closeModal() {

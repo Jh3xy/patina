@@ -6,15 +6,30 @@ import "../css/style.css";
 
 // JS modules
 import { supabase, db } from "./supabase.js";
-import { getCachedArtworks, searchCached } from "./cache.js";
-import { fetchByDepartment } from "./api.js";
-import { renderGrid } from "./masonry.js";
+import {
+  getCachedArtworks,
+  searchCached,
+  getByDepartmentCached,
+} from "./cache.js";
+import { renderGrid, appendToGrid } from "./masonry.js";
 import "./modal.js";
 
 /* ============================================================
+   STATE
+   Tracks current filter + page so "Load More" knows
+   what to fetch next
+   ============================================================ */
+
+const state = {
+  currentFilter: "all", // "all" | dept key
+  currentQuery: "", // search string
+  currentPage: 0,
+  hasMore: false,
+  isLoading: false,
+};
+
+/* ============================================================
    STICKY NAVBAR
-   Uses IntersectionObserver to toggle .navbar--sticky
-   when hero leaves viewport
    ============================================================ */
 
 const navbar = document.getElementById("navbar");
@@ -28,7 +43,6 @@ const heroObserver = new IntersectionObserver(
   },
   {
     threshold: 0,
-    // rootMargin only accepts px or % — use navbar's actual pixel height
     rootMargin: `-${navbar.offsetHeight}px 0px 0px 0px`,
   },
 );
@@ -37,7 +51,6 @@ heroObserver.observe(hero);
 
 /* ============================================================
    SYNC SEARCH INPUTS
-   Hero search and sticky nav search stay in sync
    ============================================================ */
 
 heroSearch.addEventListener("input", (e) => {
@@ -49,8 +62,109 @@ navSearch.addEventListener("input", (e) => {
 });
 
 /* ============================================================
+   LOAD MORE BUTTON
+   Injected below the masonry grid, shown/hidden based on state
+   ============================================================ */
+
+function getOrCreateLoadMoreBtn() {
+  let footer = document.querySelector(".gallery-footer");
+  if (!footer) {
+    footer = document.createElement("div");
+    footer.className = "gallery-footer";
+    const gallery = document.getElementById("gallery");
+    gallery?.appendChild(footer);
+  }
+
+  let btn = footer.querySelector(".load-more-btn");
+  if (!btn) {
+    btn = document.createElement("button");
+    btn.className = "load-more-btn";
+    btn.type = "button";
+    btn.textContent = "Load more";
+    btn.addEventListener("click", loadNextPage);
+    footer.appendChild(btn);
+  }
+
+  return btn;
+}
+
+function updateLoadMoreBtn() {
+  const btn = getOrCreateLoadMoreBtn();
+  btn.style.display = state.hasMore ? "inline-flex" : "none";
+  btn.disabled = state.isLoading;
+  btn.textContent = state.isLoading ? "Loading…" : "Load more";
+}
+
+/* ============================================================
+   FETCH HELPERS
+   All reads go through cache — API is only hit on cache miss
+   ============================================================ */
+
+async function fetchPage(page) {
+  if (state.currentQuery) {
+    // Search ignores pagination — returns all matches at once
+    const artworks = await searchCached(state.currentQuery);
+    return { artworks, hasMore: false };
+  }
+
+  if (state.currentFilter === "all") {
+    return getCachedArtworks(page);
+  }
+
+  return getByDepartmentCached(state.currentFilter, page);
+}
+
+/* ============================================================
+   INITIAL LOAD & FILTER RESET
+   Always resets to page 0 and replaces the grid
+   ============================================================ */
+
+async function loadFresh() {
+  if (state.isLoading) return;
+
+  state.isLoading = true;
+  state.currentPage = 0;
+  updateLoadMoreBtn();
+
+  try {
+    const result = await fetchPage(0);
+    state.hasMore = result.hasMore ?? false;
+    renderGrid(result.artworks);
+  } catch (err) {
+    console.error("Failed to load artworks:", err);
+  } finally {
+    state.isLoading = false;
+    updateLoadMoreBtn();
+  }
+}
+
+/* ============================================================
+   LOAD NEXT PAGE
+   Appends cards to the existing grid
+   ============================================================ */
+
+async function loadNextPage() {
+  if (state.isLoading || !state.hasMore) return;
+
+  state.isLoading = true;
+  state.currentPage += 1;
+  updateLoadMoreBtn();
+
+  try {
+    const result = await fetchPage(state.currentPage);
+    state.hasMore = result.hasMore ?? false;
+    appendToGrid(result.artworks);
+  } catch (err) {
+    console.error("Failed to load next page:", err);
+    state.currentPage -= 1; // rollback on failure
+  } finally {
+    state.isLoading = false;
+    updateLoadMoreBtn();
+  }
+}
+
+/* ============================================================
    FILTER PILLS
-   Active state toggle + fetch artworks by department
    ============================================================ */
 
 const filterPills = document.querySelectorAll(".filter-pill");
@@ -60,94 +174,75 @@ filterPills.forEach((pill) => {
     filterPills.forEach((p) => p.classList.remove("filter-pill--active"));
     pill.classList.add("filter-pill--active");
 
-    const dept = pill.getAttribute("data-filter") || "all";
-    const artworks =
-      dept === "all"
-        ? await getCachedArtworks()
-        : await fetchByDepartment(dept);
+    state.currentFilter = pill.getAttribute("data-filter") || "all";
+    state.currentQuery = ""; // clear any active search
+    heroSearch.value = "";
+    navSearch.value = "";
 
-    renderGrid(artworks);
+    await loadFresh();
   });
 });
 
 /* ============================================================
+   SEARCH WIRING — debounced
+   ============================================================ */
+
+let searchTimeout;
+
+function handleSearchInput(query) {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(async () => {
+    state.currentQuery = query;
+    state.currentFilter = "all";
+    // Reset active pill to All
+    filterPills.forEach((p) => p.classList.remove("filter-pill--active"));
+    document
+      .querySelector('[data-filter="all"]')
+      ?.classList.add("filter-pill--active");
+
+    await loadFresh();
+  }, 250);
+}
+
+heroSearch.addEventListener("input", (e) => {
+  navSearch.value = e.target.value;
+  handleSearchInput(e.target.value.trim());
+});
+
+navSearch.addEventListener("input", (e) => {
+  heroSearch.value = e.target.value;
+  handleSearchInput(e.target.value.trim());
+});
+
+/* ============================================================
    SCROLL FADE-UP ANIMATION
-   Observes .art-card elements and adds .is-visible on entry
    ============================================================ */
 
 const cardObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
-        // Stagger delay based on card index in viewport batch
         entry.target.style.transitionDelay = `${i * 0.05}s`;
         entry.target.classList.add("is-visible");
         cardObserver.unobserve(entry.target);
       }
     });
   },
-  { threshold: 0.3 },
+  { threshold: 0.15 }, // lowered slightly — cards trigger sooner on scroll
 );
 
-// Observe all current cards — re-run this after JS renders real cards
-function observeCards() {
+export function observeCards() {
   document
     .querySelectorAll(".art-card:not(.art-card--skeleton)")
     .forEach((card) => {
-      cardObserver.observe(card);
+      if (!card.classList.contains("is-visible")) {
+        cardObserver.observe(card);
+      }
     });
 }
 
-observeCards();
-
-/* ============================================================
-   SEARCH WIRING
-   Debounced search on input → searchCached() → renderGrid()
-   ============================================================ */
-
-let searchTimeout;
-
-async function performSearch(query) {
-  const artworks = await searchCached(query);
-  renderGrid(artworks);
-}
-
-heroSearch.addEventListener("input", (e) => {
-  clearTimeout(searchTimeout);
-  const query = e.target.value.trim();
-
-  searchTimeout = setTimeout(() => {
-    performSearch(query);
-  }, 200); // 200ms debounce
-});
-
-navSearch.addEventListener("input", (e) => {
-  clearTimeout(searchTimeout);
-  const query = e.target.value.trim();
-
-  searchTimeout = setTimeout(() => {
-    performSearch(query);
-  }, 200);
-});
-
-/* ============================================================
-   INITIAL DATA LOAD
-   Fetch featured artworks on page load and render grid
-   ============================================================ */
-
-(async () => {
-  try {
-    const artworks = await getCachedArtworks();
-    console.log("Loaded featured artworks from cache:", artworks);
-    renderGrid(artworks);
-  } catch (err) {
-    console.error("Failed to load featured artworks:", err);
-  }
-})();
-
 /* ============================================================
    SCROLL-TO-TOP BUTTON
-   Shows when the page is scrolled past the hero section
    ============================================================ */
 
 function createScrollTopButton() {
@@ -169,22 +264,29 @@ function createScrollTopButton() {
   function updateVisibility() {
     const btnEl = document.querySelector(".scroll-top");
     if (!btnEl) return;
-
-    if (window.scrollY > threshold()) {
-      btnEl.classList.add("is-visible");
-    } else {
-      btnEl.classList.remove("is-visible");
-    }
+    btnEl.classList.toggle("is-visible", window.scrollY > threshold());
   }
 
   window.addEventListener("scroll", updateVisibility, { passive: true });
   window.addEventListener("resize", updateVisibility);
-
-  // initial visibility
   updateVisibility();
 }
 
 createScrollTopButton();
 
-// Export so other modules can call it after rendering new cards
-export { observeCards };
+/* ============================================================
+   INITIAL DATA LOAD
+   ============================================================ */
+
+(async () => {
+  try {
+    const result = await getCachedArtworks(0);
+    state.hasMore = result.hasMore ?? false;
+    renderGrid(result.artworks);
+    updateLoadMoreBtn();
+  } catch (err) {
+    console.error("Failed to load featured artworks:", err);
+  }
+})();
+
+

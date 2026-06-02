@@ -557,7 +557,8 @@ ol {
   display: none;
 }
 
-.filter-pill {
+.filter-pill,
+.department-badge {
   flex-shrink: 0;
   padding: var(--space-xs) var(--space-md);
   border-radius: var(--radius-full);
@@ -685,6 +686,16 @@ ol {
   width: 1.5rem;
   height: 1.5rem;
 }
+.department-badge{
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  color: var(--color-accent);
+  cursor: pointer;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
 
 .art-card:hover .art-card__overlay {
   opacity: 1;
@@ -697,7 +708,7 @@ ol {
 
 .art-card__title {
   font-family: var(--font-heading);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base) !important;
   font-weight: var(--fw-medium);
   color: var(--color-text-primary);
   line-height: var(--lh-tight);
@@ -705,6 +716,10 @@ ol {
   margin-bottom: var(--space-xs);
   /* Override h-tag defaults */
   font-size: var(--fs-sm);
+}
+
+.art-card__source{
+  font-size: var(--fs-xs);
 }
 
 .art-card__artist {
@@ -826,7 +841,7 @@ body.modal-is-open {
   height: 3rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
-  background: rgba(201, 168, 76, 0.2);
+  background: rgba(201, 168, 76, 0.5);
   color: var(--color-accent);
   cursor: pointer;
   transition:
@@ -844,6 +859,7 @@ body.modal-is-open {
 .art-modal__close svg {
   width: 1.25rem;
   height: 1.25rem;
+  color: var(--color-text-primary);
 }
 
 .art-modal__layout {
@@ -854,6 +870,7 @@ body.modal-is-open {
 }
 
 .art-modal__visual {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -868,6 +885,7 @@ body.modal-is-open {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 99;
   margin: 0;
   padding: var(--space-md);
   background: rgba(240, 237, 230, 0.06);
@@ -890,6 +908,7 @@ body.modal-is-open {
   font-size: var(--fs-sm);
   line-height: var(--lh-tight);
   text-align: center;
+  z-index: 99;
 }
 
 .art-modal__narrative {
@@ -1253,4 +1272,74 @@ body.modal-is-open {
     width: 2.5rem;
     height: 2.5rem;
   }
+}
+
+
+
+/* ============================================================
+   MODAL BACKDROP — CSS image-based approach
+   ============================================================ */
+
+.art-modal {
+  /* These vars are set by JS via setModalBackground() */
+  --modal-bg-color: #121212;
+  --modal-bg-image: none;
+}
+
+.art-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  /* Layer 1: the artwork image, heavily blurred + darkened */
+  background-image: var(--modal-bg-image);
+  background-size: cover;
+  background-position: center;
+  background-color: var(--modal-bg-color);
+  filter: blur(30px) brightness(0.6) saturate(0.7);
+  transform: scale(1.1); /* prevent blur edge bleed */
+}
+
+/* ============================================================
+   LOAD MORE / PAGINATION
+   ============================================================ */
+
+.gallery-footer {
+  display: flex;
+  justify-content: center;
+  padding-block: var(--space-2xl) var(--space-4xl);
+}
+
+.load-more-btn {
+  padding: var(--space-sm) var(--space-2xl);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.load-more-btn:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-border-accent);
+  background-color: var(--color-accent-subtle);
+}
+
+.load-more-btn:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+.gallery-empty {
+  padding: var(--space-4xl);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--fs-md);
+  width: 100%;
 }

@@ -40,6 +40,12 @@ function getArtworkDataFromCard(card) {
 function createCardMarkup(artwork) {
   const id = escapeHtml(getArtworkId(artwork));
   const source = escapeHtml(artwork.source);
+  const sourceName =
+    artwork.source === "met"
+      ? "Metropolitan Museum of Art"
+      : artwork.source === "aic"
+        ? "Art Institute of Chicago"
+        : "Unknown Source";
   const sourceId = escapeHtml(artwork.source_id);
   const title = escapeHtml(artwork.title || "Untitled");
   const artist = escapeHtml(artwork.artist || "Unknown artist");
@@ -65,10 +71,14 @@ function createCardMarkup(artwork) {
     >
       <div class="art-card__img-wrap">
         <img src="${imageUrl}" alt="${title}" class="art-card__img" loading="lazy" />
-        <div class="art-card__overlay"><i data-lucide="expand"></i></div>
+        <div class="art-card__overlay">
+        <button class="department-badge">${department}</button>
+          <i data-lucide="expand"></i>
+        </div>
       </div>
       <div class="art-card__info">
-        <h3 class="art-card__title">${title}</h3>
+      <h3 class="art-card__title">${title}</h3>
+      <p class="art-card__source"> Source - ${sourceName}</p>
         <p class="art-card__artist">${artist}</p>
       </div>
     </div>
@@ -76,19 +86,18 @@ function createCardMarkup(artwork) {
 }
 
 function renderEmptyState() {
-  if (!grid) {
-    return;
-  }
-
+  if (!grid) return;
   grid.innerHTML = '<p class="gallery-empty">No artworks found.</p>';
 }
 
-function bindImageLayoutUpdates() {
-  if (!grid || !masonryInstance) {
-    return;
-  }
+function bindImageLayoutUpdates(elements) {
+  if (!grid || !masonryInstance) return;
 
-  grid.querySelectorAll(".art-card__img").forEach((image) => {
+  const images = elements
+    ? elements.querySelectorAll(".art-card__img")
+    : grid.querySelectorAll(".art-card__img");
+
+  images.forEach((image) => {
     if (image.complete) {
       masonryInstance.layout();
       return;
@@ -105,20 +114,13 @@ function bindImageLayoutUpdates() {
 }
 
 function bindGridClickHandler() {
-  if (!grid || grid.dataset.clickBound === "true") {
-    return;
-  }
+  if (!grid || grid.dataset.clickBound === "true") return;
 
   grid.addEventListener("click", (event) => {
-    if (!(event.target instanceof Element)) {
-      return;
-    }
+    if (!(event.target instanceof Element)) return;
 
     const card = event.target.closest(".art-card:not(.art-card--skeleton)");
-
-    if (!card || !grid.contains(card)) {
-      return;
-    }
+    if (!card || !grid.contains(card)) return;
 
     grid.dispatchEvent(
       new CustomEvent("patina:artwork-select", {
@@ -132,9 +134,7 @@ function bindGridClickHandler() {
 }
 
 function bindResizeHandler() {
-  if (!grid || grid.dataset.resizeBound === "true") {
-    return;
-  }
+  if (!grid || grid.dataset.resizeBound === "true") return;
 
   window.addEventListener("resize", () => {
     window.clearTimeout(resizeTimer);
@@ -147,18 +147,13 @@ function bindResizeHandler() {
 }
 
 function destroyMasonry() {
-  if (!masonryInstance) {
-    return;
-  }
-
+  if (!masonryInstance) return;
   masonryInstance.destroy();
   masonryInstance = null;
 }
 
 export function reinitMasonry() {
-  if (!grid) {
-    return null;
-  }
+  if (!grid) return null;
 
   destroyMasonry();
 
@@ -176,10 +171,12 @@ export function reinitMasonry() {
   return masonryInstance;
 }
 
+/**
+ * Full grid replace — clears everything and renders fresh set.
+ * Called on filter change, search, or initial load.
+ */
 export function renderGrid(artworks = []) {
-  if (!grid) {
-    return;
-  }
+  if (!grid) return;
 
   destroyMasonry();
 
@@ -200,6 +197,51 @@ export function renderGrid(artworks = []) {
   bindGridClickHandler();
   bindResizeHandler();
   reinitMasonry();
+  observeCards();
+  window.lucide?.createIcons();
+}
+
+/**
+ * Append-only — adds new cards to the existing grid.
+ * Called by "Load More". Masonry instance is already running;
+ * we stamp in new elements and tell Masonry to pick them up.
+ */
+export function appendToGrid(artworks = []) {
+  if (!grid || !masonryInstance) {
+    // Masonry not initialized yet — just do a full render
+    renderGrid(artworks);
+    return;
+  }
+
+  const visibleArtworks = artworks.filter((artwork) => artwork?.image_url);
+  if (!visibleArtworks.length) return;
+
+  // Create a fragment, stamp markup into it, collect the elements
+  const fragment = document.createDocumentFragment();
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = visibleArtworks.map(createCardMarkup).join("");
+
+  const newCards = Array.from(tempDiv.children);
+  newCards.forEach((card) => fragment.appendChild(card));
+  grid.appendChild(fragment);
+
+  // Tell Masonry about the new items
+  masonryInstance.appended(newCards);
+  masonryInstance.layout();
+
+  // Watch new card images for load-triggered relayout
+  newCards.forEach((card) => {
+    const img = card.querySelector(".art-card__img");
+    if (!img) return;
+    if (img.complete) {
+      masonryInstance?.layout();
+    } else {
+      img.addEventListener("load", () => masonryInstance?.layout(), {
+        once: true,
+      });
+    }
+  });
+
   observeCards();
   window.lucide?.createIcons();
 }
