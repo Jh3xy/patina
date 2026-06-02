@@ -181,7 +181,7 @@ function renderCuratorPanel(artwork) {
           <button type="button">${escapeHtml(departmentQuestion)}</button>
         </div>
         <form class="art-modal__ask" aria-label="Ask the curator">
-          <input type="text" placeholder="Ask the Curator about this masterpiece..." disabled />
+          <input type="text" placeholder="Ask the Curator about this masterpiece..." />
           <button type="button" aria-label="Send curator question" disabled>
             <i data-lucide="send"></i>
           </button>

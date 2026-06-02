@@ -1054,6 +1054,12 @@ body.modal-is-open {
   text-align: start;
 }
 
+.art-modal__inquiries button:hover{
+  border-color: var(--color-border-accent);
+  box-shadow: var(--shadow-glow);
+  color: var(--color-text-primary);
+}
+
 .art-modal__ask {
   display: grid;
   grid-template-columns: 1fr auto;
