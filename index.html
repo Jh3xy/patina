@@ -14,15 +14,32 @@
     <div class="container">
       <div class="navbar__inner flex-between">
         <a href="/" class="navbar__brand">Patina</a>
-        <!-- <div class="navbar__status" id="navbarStatus">
-          <span class="navbar__status-dot"></span>
-          <span class="navbar__status-text">Museum at Night &nbsp;·&nbsp; Curator Online</span>
-        </div> -->
+        <div class="nav_links flex-between gap-2">
+          <a href="#" class="nav_link active">Home</a>
+          <a href="#" class="nav_link">Collections</a>
+          <a href="#" class="nav_link">Books</a>
+          <a href="#" class="nav_link">Catalog</a>
+          <a href="#" class="nav_link">Library</a>
+        </div>
         <div class="navbar__search" id="navbarSearch">
           <label for="navSearch" class="search-label search-label--compact">
             <i data-lucide="search"></i>
             <input type="search" id="navSearch" placeholder="Search museum..." autocomplete="off" />
           </label>
+        </div>
+        <div class="navbar_secondary flex gap-2">
+          <button class="menu_btn">
+            <i data-lucide="ellipsis-vertical"></i>
+            <div class="dropdown">
+              <div class="nav_links-alt gap-4 flex flex-col justify-start ">
+                <a href="#" class="nav_link active">Home</a>
+                <a href="/src/collections/" class="nav_link">Collections</a>
+                <a href="/src/books/" class="nav_link">Books</a>
+                <a href="/src/catalog/" class="nav_link">Catalog</a>
+                <a href="/src/library/" class="nav_link">Library</a>
+              </div>
+            </div>
+          </button>
         </div>
       </div>
     </div>

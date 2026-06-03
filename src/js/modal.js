@@ -273,6 +273,7 @@ function initCuratorChat(artwork) {
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    input.value = '';
 
     const messageText = input.value.trim();
     if (!messageText) {
@@ -312,7 +313,7 @@ function initCuratorChat(artwork) {
       const aiText =
         typeof payload?.text === "string"
           ? payload.text
-          : "I’m here to help, please try again.";
+          : "I’ didn't get that, please try again.";
 
       if (typingIndicator.parentNode) {
         typingIndicator.remove();
@@ -327,7 +328,7 @@ function initCuratorChat(artwork) {
       }
 
       const errorRow = createChatBubble(
-        "Something went wrong while I was composing a response. Try again in a moment.",
+        "Something went wrong while I was responding. Pleas try again in a moment.",
         "assistant",
       );
       chatLog.appendChild(errorRow);

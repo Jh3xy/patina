@@ -309,6 +309,46 @@ ol {
   color: var(--color-accent);
 }
 
+.menu_btn{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  gap: 0;
+  padding: 5px;
+  background-color: var(--color-bg-secondary);
+}
+
+.menu_btn .dropdown{
+  position: absolute;
+  top: 25px;
+  right: .3rem;
+  padding-top: 1rem;
+  display: none;
+}
+
+.menu_btn:hover .dropdown{
+  display: block;
+}
+
+.menu_btn .dropdown .nav_links-alt{
+  align-items: start;
+  padding: 1rem;
+  background-color: var(--color-bg-secondary);
+  border-bottom-color: var(--color-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 10px;
+}
+
+@media (min-width: 840px) {
+  .menu_btn{
+    display: none;
+  }
+}
+
 /* Status indicator — visible in hero state, hides when sticky */
 .navbar__status {
   display: flex;
@@ -557,9 +597,20 @@ ol {
 .filter-bar__pills::-webkit-scrollbar {
   display: none;
 }
+@media (max-width: 840px) {
+  .nav_links {
+    display: none;
+  }
+}
+@media (min-width: 840px) {
+  .navbar_secondary {
+    display: none;
+  }
+}
 
 .filter-pill,
-.department-badge {
+.department-badge,
+.nav_link {
   flex-shrink: 0;
   padding: var(--space-xs) var(--space-md);
   border-radius: var(--radius-full);
@@ -575,6 +626,36 @@ ol {
     color var(--transition-fast),
     background-color var(--transition-fast),
     border-color var(--transition-fast);
+}
+
+.nav_link{
+  border: none;
+  position: relative;
+}
+
+.nav_link.active{
+  color: var(--color-text-primary);
+}
+
+.nav_link:hover{
+  color: var(--color-text-primary);
+}
+
+.nav_link:hover::after,
+.nav_link.active::after {
+  content: "•";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--color-accent); 
+  font-size: 12px;
+}
+
+.nav_links-alt .nav_link.active::after,
+.nav_links-alt .nav_link:hover::after{
+  left: 4px;
+  top: 3px;
 }
 
 .filter-pill:hover {
@@ -639,6 +720,7 @@ ol {
 
 .art-card {
   break-inside: avoid;
+  min-height: 260px;
   margin-bottom: var(--layout-grid-gap);
   cursor: pointer;
   border-radius: var(--radius-md);
@@ -921,7 +1003,14 @@ body.modal-is-open {
 .art-modal__details {
   width: min(680px, 100%);
   min-height: 100vh;
+  margin-left: 0;
   padding: var(--space-4xl) var(--space-3xl) var(--space-3xl);
+}
+
+@media (min-width: 500px) {
+  .art-modal__details{
+    margin-left: 1rem;
+  }
 }
 
 .art-modal__source {
@@ -1269,18 +1358,11 @@ body.modal-is-open {
 
 @media (max-width: 480px) {
   .scroll-top {
-    right: var(--space-md);
-    bottom: var(--space-md);
     width: 2.5rem;
     height: 2.5rem;
   }
 }
 
-
-
-/* ============================================================
-   MODAL BACKDROP — CSS image-based approach
-   ============================================================ */
 
 .art-modal {
   /* These vars are set by JS via setModalBackground() */
@@ -1312,7 +1394,7 @@ body.modal-is-open {
 
 .load-more-btn {
   padding: var(--space-sm) var(--space-2xl);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-accent);
   border-radius: var(--radius-full);
   background: transparent;
   color: var(--color-text-secondary);
@@ -1329,7 +1411,6 @@ body.modal-is-open {
 
 .load-more-btn:hover {
   color: var(--color-text-primary);
-  border-color: var(--color-border-accent);
   background-color: var(--color-accent-subtle);
 }
 
