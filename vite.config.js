@@ -1,4 +1,7 @@
+
+
 import { defineConfig } from "vite";
+import { resolve } from "path";
 
 export default defineConfig({
   server: {
@@ -11,7 +14,9 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, "index.html"),
-        collections: resolve(__dirname, "/src/collections/index.html"),
+        collections: resolve(__dirname, "src/collections/index.html"), 
+        books: resolve(__dirname, "src/books/index.html"), 
+        catalog: resolve(__dirname, "src/catalog/index.html"), 
       },
     },
   },
