@@ -273,7 +273,7 @@ function initCuratorChat(artwork) {
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    input.value = '';
+    // input.value = '';~
 
     const messageText = input.value.trim();
     if (!messageText) {
