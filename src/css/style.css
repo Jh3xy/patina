@@ -169,6 +169,75 @@ textarea::placeholder {
   color: var(--color-text-muted);
 }
 
+.theme-toggle {
+  position: relative;
+  width: 3rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-bg-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
+  overflow: hidden;
+}
+
+.theme-toggle::before {
+  content: "";
+  position: absolute;
+  left: 0.15rem;
+  top: 10%;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--color-text-primary);
+  box-shadow: var(--shadow-card);
+  transition:
+    transform var(--transition-fast),
+    background var(--transition-fast);
+  transform: translateX(0);
+  z-index: 0;
+}
+
+body.light .theme-toggle {
+  background: var(--color-bg-primary);
+  border-color: var(--color-border-accent);
+}
+
+body.light .theme-toggle::before {
+  transform: translateX(1.4rem);
+}
+
+.theme-toggle:hover {
+  border-color: var(--color-border-accent);
+  background: var(--color-bg-tertiary);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.mobile-theme-toggle {
+  display: none;
+  margin-top: var(--space-md);
+}
+
+@media (max-width: 840px) {
+  .mobile-theme-toggle {
+    display: inline-flex;
+  }
+  #themeToggle{
+    display: none;
+  }
+}
+
 /* ============================================================
    LISTS
    ============================================================ */
@@ -285,17 +354,17 @@ ol {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
-.navbar__inner-wrap{
+.navbar__inner-wrap {
   display: flex;
   align-items: center;
   gap: 2rem;
 }
 
 @media (max-width: 740px) {
-  .navbar{
+  .navbar {
     flex-direction: column;
   }
-  .navbar__inner-wrap{
+  .navbar__inner-wrap {
     gap: 1rem;
   }
 }
@@ -502,7 +571,7 @@ ol {
    ============================================================ */
 
 .hero {
-  min-height: calc(90vh - var(--layout-navbar-height));
+  min-height: calc(80vh - var(--layout-navbar-height));
   display: flex;
   align-items: center;
   padding-bottom: var(--space-xs);
@@ -786,7 +855,7 @@ ol {
   height: 1.5rem;
 }
 
-body.light .art-card__overlay svg{
+body.light .art-card__overlay svg {
   color: var(--color-bg-primary);
 }
 .department-badge {
@@ -964,7 +1033,7 @@ body.modal-is-open {
     transform var(--transition-fast);
 }
 
-body.light .art-modal__close{
+body.light .art-modal__close {
   background: var(--color-bg-primary);
 }
 

@@ -1,112 +1,212 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Patina — Art Collection</title>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script type="module" src="./src/js/script.js"></script>
-</head>
-<body>
-  <!-- ===================== NAVBAR ===================== -->
-  <nav class="navbar" id="navbar">
-    <div class="container">
-      <div class="navbar__inner flex-between">
-        <a href="/" class="navbar__brand">Patina</a>
-        <div class="navbar__inner-wrap">
-          <div class="nav_links flex-between gap-2">
-            <a href="#" class="nav_link active">Home</a>
-            <a href="#" class="nav_link">Collections</a>
-            <a href="#" class="nav_link">Books</a>
-            <a href="#" class="nav_link">Catalog</a>
-            <a href="#" class="nav_link">Library</a>
-          </div>
-          <div class="search-wrap flex gap-2">
-            <div class="navbar__search" id="navbarSearch">
-              <label for="navSearch" class="search-label search-label--compact">
-                <i data-lucide="search"></i>
-                <input type="search" id="navSearch" placeholder="Search museum..." autocomplete="off" />
-              </label>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Patina — Art Collection</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script type="module" src="./src/js/script.js"></script>
+  </head>
+  <body>
+    <!-- ===================== NAVBAR ===================== -->
+    <nav class="navbar" id="navbar">
+      <div class="container">
+        <div class="navbar__inner flex-between">
+          <a href="/" class="navbar__brand">Patina</a>
+          <div class="navbar__inner-wrap">
+            <div class="nav_links flex-between gap-2">
+              <a href="#" class="nav_link active">Home</a>
+              <a href="#" class="nav_link">Collections</a>
+              <a href="#" class="nav_link">Books</a>
+              <a href="#" class="nav_link">Catalog</a>
+              <a href="#" class="nav_link">Library</a>
             </div>
-            <button id="themeToggle" class="theme-toggle" aria-label="Toggle color theme">
-              <i data-lucide="sun"></i>
-            </button>
-          </div>
-          <div class="navbar_secondary flex gap-2">
-            <button class="menu_btn">
-              <i data-lucide="ellipsis-vertical"></i>
-              <div class="dropdown">
-                <div class="nav_links-alt gap-4 flex flex-col justify-start ">
-                  <a href="#" class="nav_link active">Home</a>
-                  <a href="/src/collections/" class="nav_link">Collections</a>
-                  <a href="/src/books/" class="nav_link">Books</a>
-                  <a href="/src/catalog/" class="nav_link">Catalog</a>
-                  <a href="/src/library/" class="nav_link">Library</a>
-                </div>
+            <div class="search-wrap flex gap-2">
+              <div class="navbar__search" id="navbarSearch">
+                <label
+                  for="navSearch"
+                  class="search-label search-label--compact"
+                >
+                  <i data-lucide="search"></i>
+                  <input
+                    type="search"
+                    id="navSearch"
+                    placeholder="Search museum..."
+                    autocomplete="off"
+                  />
+                </label>
               </div>
-            </button>
+              <button
+                id="themeToggle"
+                class="theme-toggle"
+                aria-label="Toggle color theme"
+              ></button>
+            </div>
+            <div class="navbar_secondary flex gap-2">
+              <button class="menu_btn">
+                <i data-lucide="ellipsis-vertical"></i>
+                <div class="dropdown">
+                  <div class="nav_links-alt gap-4 flex flex-col justify-start">
+                    <a href="#" class="nav_link active">Home</a>
+                    <a href="/src/collections/" class="nav_link">Collections</a>
+                    <a href="/src/books/" class="nav_link">Books</a>
+                    <a href="/src/catalog/" class="nav_link">Catalog</a>
+                    <a href="/src/library/" class="nav_link">Library</a>
+                    <button
+                      class="theme-toggle mobile-theme-toggle"
+                      aria-label="Toggle color theme"
+                    ></button>
+                  </div>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <!-- ===================== HERO ===================== -->
-  <section class="hero" id="hero">
-    <div class="container">
-      <div class="hero__content">
-        <h1 class="hero__heading">Discover the world's greatest art</h1>
-        <p class="hero__sub">Walk through historical brushwork, symbolism, and dynamic audio-visual curatorial guides.</p>
-        <div class="hero__search">
-          <label for="heroSearch" class="search-label search-label--hero">
-            <i data-lucide="search"></i>
-            <input type="search" id="heroSearch" placeholder="Search artists, paintings, movements, mediums..." autocomplete="off" />
-          </label>
+    <!-- ===================== HERO ===================== -->
+    <section class="hero" id="hero">
+      <div class="container">
+        <div class="hero__content">
+          <h1 class="hero__heading">Discover the world's greatest art</h1>
+          <p class="hero__sub">
+            Walk through historical brushwork, symbolism, and dynamic
+            audio-visual curatorial guides.
+          </p>
+          <div class="hero__search">
+            <label for="heroSearch" class="search-label search-label--hero">
+              <i data-lucide="search"></i>
+              <input
+                type="search"
+                id="heroSearch"
+                placeholder="Search artists, paintings, movements, mediums..."
+                autocomplete="off"
+              />
+            </label>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===================== GALLERY ===================== -->
-  <section class="gallery" id="gallery">
-    <div class="container">
+    <!-- ===================== GALLERY ===================== -->
+    <section class="gallery" id="gallery">
+      <div class="container">
+        <!-- Filter Bar -->
+        <div class="filter-bar" id="filterBar">
+          <button class="filter-bar__icon" aria-label="Filter options">
+            <i data-lucide="funnel"></i>
+          </button>
+          <div class="filter-bar__pills" role="list">
+            <button
+              class="filter-pill filter-pill--active"
+              data-filter="all"
+              role="listitem"
+            >
+              All
+            </button>
+            <button class="filter-pill" data-filter="paintings" role="listitem">
+              Paintings
+            </button>
+            <button
+              class="filter-pill"
+              data-filter="sculptures"
+              role="listitem"
+            >
+              Sculptures
+            </button>
+            <button
+              class="filter-pill"
+              data-filter="impressionism"
+              role="listitem"
+            >
+              Impressionism
+            </button>
+            <button
+              class="filter-pill"
+              data-filter="renaissance"
+              role="listitem"
+            >
+              Renaissance
+            </button>
+            <button class="filter-pill" data-filter="modern" role="listitem">
+              Modern
+            </button>
+            <button class="filter-pill" data-filter="baroque" role="listitem">
+              Baroque
+            </button>
+            <button
+              class="filter-pill"
+              data-filter="contemporary"
+              role="listitem"
+            >
+              Contemporary
+            </button>
+          </div>
+        </div>
 
-      <!-- Filter Bar -->
-      <div class="filter-bar" id="filterBar">
-        <button class="filter-bar__icon" aria-label="Filter options">
-          <i data-lucide="funnel"></i>
-        </button>
-        <div class="filter-bar__pills" role="list">
-          <button class="filter-pill filter-pill--active" data-filter="all" role="listitem">All</button>
-          <button class="filter-pill" data-filter="paintings" role="listitem">Paintings</button>
-          <button class="filter-pill" data-filter="sculptures" role="listitem">Sculptures</button>
-          <button class="filter-pill" data-filter="impressionism" role="listitem">Impressionism</button>
-          <button class="filter-pill" data-filter="renaissance" role="listitem">Renaissance</button>
-          <button class="filter-pill" data-filter="modern" role="listitem">Modern</button>
-          <button class="filter-pill" data-filter="baroque" role="listitem">Baroque</button>
-          <button class="filter-pill" data-filter="contemporary" role="listitem">Contemporary</button>
+        <!-- Masonry Grid — JS populates real cards, skeletons show until data loads -->
+        <div class="masonry-grid" id="masonryGrid">
+          <div class="art-card art-card--skeleton">
+            <div
+              class="art-card__img skeleton-pulse"
+              style="height: 320px"
+            ></div>
+          </div>
+          <div class="art-card art-card--skeleton">
+            <div
+              class="art-card__img skeleton-pulse"
+              style="height: 200px"
+            ></div>
+          </div>
+          <div class="art-card art-card--skeleton">
+            <div
+              class="art-card__img skeleton-pulse"
+              style="height: 280px"
+            ></div>
+          </div>
+          <div class="art-card art-card--skeleton">
+            <div
+              class="art-card__img skeleton-pulse"
+              style="height: 240px"
+            ></div>
+          </div>
+          <div class="art-card art-card--skeleton">
+            <div
+              class="art-card__img skeleton-pulse"
+              style="height: 360px"
+            ></div>
+          </div>
+          <div class="art-card art-card--skeleton">
+            <div
+              class="art-card__img skeleton-pulse"
+              style="height: 180px"
+            ></div>
+          </div>
+          <div class="art-card art-card--skeleton">
+            <div
+              class="art-card__img skeleton-pulse"
+              style="height: 300px"
+            ></div>
+          </div>
+          <div class="art-card art-card--skeleton">
+            <div
+              class="art-card__img skeleton-pulse"
+              style="height: 220px"
+            ></div>
+          </div>
+          <div class="art-card art-card--skeleton">
+            <div
+              class="art-card__img skeleton-pulse"
+              style="height: 260px"
+            ></div>
+          </div>
         </div>
       </div>
+    </section>
 
-      <!-- Masonry Grid — JS populates real cards, skeletons show until data loads -->
-      <div class="masonry-grid" id="masonryGrid">
-        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:320px"></div></div>
-        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:200px"></div></div>
-        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:280px"></div></div>
-        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:240px"></div></div>
-        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:360px"></div></div>
-        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:180px"></div></div>
-        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:300px"></div></div>
-        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:220px"></div></div>
-        <div class="art-card art-card--skeleton"><div class="art-card__img skeleton-pulse" style="height:260px"></div></div>
-      </div>
-
-    </div>
-  </section>
-
-  <script>
-    lucide.createIcons();
-  </script>
-
-</body>
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
 </html>

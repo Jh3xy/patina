@@ -299,11 +299,11 @@ createScrollTopButton();
   }
 })();
 
-let toggleBtn;
+let toggleButtons;
 
 function initThemeToggle() {
-  // Query the toggle button after DOM is ready
-  toggleBtn = document.getElementById("themeToggle");
+  // Query the toggle buttons after DOM is ready
+  toggleButtons = document.querySelectorAll(".theme-toggle");
 
   // Set initial theme state
   const savedTheme = localStorage.getItem("patina-theme");
@@ -319,45 +319,30 @@ function initThemeToggle() {
   if (isLight) {
     document.body.classList.add("light");
     document.body.classList.remove("dark");
-    updateToggleIcon("light");
   } else {
     document.body.classList.add("dark");
     document.body.classList.remove("light");
-    updateToggleIcon("dark");
   }
 
-  // Attach click handler to the button now that it exists. Guard to avoid duplicate listeners.
-  if (toggleBtn && !toggleBtn.dataset.themeListenerAdded) {
-    toggleBtn.addEventListener("click", () => {
-      // Toggle light; ensure we always set an explicit class for the opposite theme
+  // Attach click handler to all theme toggle buttons.
+  toggleButtons.forEach((button) => {
+    if (button.dataset.themeListenerAdded) return;
+
+    button.addEventListener("click", () => {
       const nowLight = document.body.classList.toggle("light");
 
       if (nowLight) {
         document.body.classList.remove("dark");
         localStorage.setItem("patina-theme", "light");
-        updateToggleIcon("light");
       } else {
         document.body.classList.add("dark");
         document.body.classList.remove("light");
         localStorage.setItem("patina-theme", "dark");
-        updateToggleIcon("dark");
       }
     });
-    toggleBtn.dataset.themeListenerAdded = "1";
-  }
-}
 
-//Dynamic Icon Assembly & Asset Refresh Lifecycle
-function updateToggleIcon(theme) {
-  // show 'moon' if theme is light
-  if (theme === "light") {
-    toggleBtn.innerHTML = '<i data-lucide="moon"></i>';
-  } else {
-    toggleBtn.innerHTML = '<i data-lucide="sun"></i>';
-  }
-
-  // refresh lucide icons to apply the new icon
-  window.lucide?.createIcons();
+    button.dataset.themeListenerAdded = "1";
+  });
 }
 
 // Invoke during runtime setup execution sequence
