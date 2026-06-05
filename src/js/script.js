@@ -11,7 +11,7 @@ import {
   searchCached,
   getByDepartmentCached,
 } from "./cache.js";
-import { renderGrid, appendToGrid } from "./masonry.js";
+import { renderGrid, appendToGrid, renderSkeletons } from "./masonry.js";
 import "./modal.js";
 
 /* ============================================================
@@ -27,6 +27,8 @@ const state = {
   hasMore: false,
   isLoading: false,
 };
+
+let currentSearchId = 0;
 
 /* ============================================================
    STICKY NAVBAR
@@ -120,21 +122,29 @@ async function fetchPage(page) {
    ============================================================ */
 
 async function loadFresh() {
-  if (state.isLoading) return;
+  currentSearchId += 1;
+  const thisSearchId = currentSearchId;
 
   state.isLoading = true;
   state.currentPage = 0;
   updateLoadMoreBtn();
+  renderSkeletons();
 
   try {
     const result = await fetchPage(0);
+    if (thisSearchId !== currentSearchId) return;
+
     state.hasMore = result.hasMore ?? false;
     renderGrid(result.artworks);
   } catch (err) {
-    console.error("Failed to load artworks:", err);
+    if (thisSearchId === currentSearchId) {
+      console.error("Failed to load artworks:", err);
+    }
   } finally {
-    state.isLoading = false;
-    updateLoadMoreBtn();
+    if (thisSearchId === currentSearchId) {
+      state.isLoading = false;
+      updateLoadMoreBtn();
+    }
   }
 }
 
@@ -289,4 +299,66 @@ createScrollTopButton();
   }
 })();
 
+let toggleBtn;
 
+function initThemeToggle() {
+  // Query the toggle button after DOM is ready
+  toggleBtn = document.getElementById("themeToggle");
+
+  // Set initial theme state
+  const savedTheme = localStorage.getItem("patina-theme");
+  const systemPrefersLight = window.matchMedia(
+    "(prefers-color-scheme: light)",
+  ).matches;
+
+  // Set isLight to true if light is saved to storage or if system default theme is light
+  const isLight = savedTheme === "light" || (!savedTheme && systemPrefersLight);
+
+  // Apply theme state cleanly to the DOM root immediately and keep an explicit
+  // `dark` class so the body always reflects the active theme in devtools.
+  if (isLight) {
+    document.body.classList.add("light");
+    document.body.classList.remove("dark");
+    updateToggleIcon("light");
+  } else {
+    document.body.classList.add("dark");
+    document.body.classList.remove("light");
+    updateToggleIcon("dark");
+  }
+
+  // Attach click handler to the button now that it exists. Guard to avoid duplicate listeners.
+  if (toggleBtn && !toggleBtn.dataset.themeListenerAdded) {
+    toggleBtn.addEventListener("click", () => {
+      // Toggle light; ensure we always set an explicit class for the opposite theme
+      const nowLight = document.body.classList.toggle("light");
+
+      if (nowLight) {
+        document.body.classList.remove("dark");
+        localStorage.setItem("patina-theme", "light");
+        updateToggleIcon("light");
+      } else {
+        document.body.classList.add("dark");
+        document.body.classList.remove("light");
+        localStorage.setItem("patina-theme", "dark");
+        updateToggleIcon("dark");
+      }
+    });
+    toggleBtn.dataset.themeListenerAdded = "1";
+  }
+}
+
+//Dynamic Icon Assembly & Asset Refresh Lifecycle
+function updateToggleIcon(theme) {
+  // show 'moon' if theme is light
+  if (theme === "light") {
+    toggleBtn.innerHTML = '<i data-lucide="moon"></i>';
+  } else {
+    toggleBtn.innerHTML = '<i data-lucide="sun"></i>';
+  }
+
+  // refresh lucide icons to apply the new icon
+  window.lucide?.createIcons();
+}
+
+// Invoke during runtime setup execution sequence
+document.addEventListener("DOMContentLoaded", initThemeToggle);

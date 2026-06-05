@@ -28,6 +28,7 @@ body {
   font-weight: var(--fw-regular);
   line-height: var(--lh-normal);
   min-height: 100dvh;
+  transition: var(--transition-fast);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -267,10 +268,11 @@ ol {
    ============================================================ */
 
 .navbar {
+  padding-top: 15px;
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
-  height: var(--layout-navbar-height);
+  min-height: var(--layout-navbar-height);
   display: flex;
   align-items: center;
   background-color: transparent;
@@ -283,9 +285,23 @@ ol {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
+.navbar__inner-wrap{
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+@media (max-width: 740px) {
+  .navbar{
+    flex-direction: column;
+  }
+  .navbar__inner-wrap{
+    gap: 1rem;
+  }
+}
 
 .navbar--sticky {
-  background-color: rgba(18, 18, 18, 0.85);
+  background-color: var(--color-bg-translucent);
   border-bottom-color: var(--color-border);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -309,7 +325,7 @@ ol {
   color: var(--color-accent);
 }
 
-.menu_btn{
+.menu_btn {
   display: flex;
   flex-direction: column;
   position: relative;
@@ -321,19 +337,19 @@ ol {
   background-color: var(--color-bg-secondary);
 }
 
-.menu_btn .dropdown{
+.menu_btn .dropdown {
   position: absolute;
   top: 25px;
-  right: .3rem;
+  right: 0.3rem;
   padding-top: 1rem;
   display: none;
 }
 
-.menu_btn:hover .dropdown{
+.menu_btn:hover .dropdown {
   display: block;
 }
 
-.menu_btn .dropdown .nav_links-alt{
+.menu_btn .dropdown .nav_links-alt {
   align-items: start;
   padding: 1rem;
   background-color: var(--color-bg-secondary);
@@ -344,7 +360,7 @@ ol {
 }
 
 @media (min-width: 840px) {
-  .menu_btn{
+  .menu_btn {
     display: none;
   }
 }
@@ -628,16 +644,16 @@ ol {
     border-color var(--transition-fast);
 }
 
-.nav_link{
+.nav_link {
   border: none;
   position: relative;
 }
 
-.nav_link.active{
+.nav_link.active {
   color: var(--color-text-primary);
 }
 
-.nav_link:hover{
+.nav_link:hover {
   color: var(--color-text-primary);
 }
 
@@ -648,12 +664,12 @@ ol {
   bottom: -8px;
   left: 50%;
   transform: translateX(-50%);
-  color: var(--color-accent); 
+  color: var(--color-accent);
   font-size: 12px;
 }
 
 .nav_links-alt .nav_link.active::after,
-.nav_links-alt .nav_link:hover::after{
+.nav_links-alt .nav_link:hover::after {
   left: 4px;
   top: 3px;
 }
@@ -765,11 +781,15 @@ ol {
 }
 
 .art-card__overlay svg {
-  color: var(--color-text-primary);
+  color: var(--color-text-secondary);
   width: 1.5rem;
   height: 1.5rem;
 }
-.department-badge{
+
+body.light .art-card__overlay svg{
+  color: var(--color-bg-primary);
+}
+.department-badge {
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -777,7 +797,9 @@ ol {
   border: 1px solid var(--color-border);
   color: var(--color-accent);
   cursor: pointer;
-  transition: transform var(--transition-fast), opacity var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    opacity var(--transition-fast);
 }
 
 .art-card:hover .art-card__overlay {
@@ -801,7 +823,7 @@ ol {
   font-size: var(--fs-sm);
 }
 
-.art-card__source{
+.art-card__source {
   font-size: var(--fs-xs);
 }
 
@@ -882,7 +904,11 @@ body.modal-is-open {
 }
 
 .art-modal {
-  --modal-gradient: linear-gradient(to bottom, #121212, #121212);
+  --modal-gradient: linear-gradient(
+    to bottom,
+    var(--color-bg-primary),
+    var(--color-bg-primary)
+  );
   position: fixed;
   inset: 0;
   z-index: var(--z-modal);
@@ -897,7 +923,12 @@ body.modal-is-open {
 .art-modal__backdrop {
   position: absolute;
   inset: 0;
-  background: var(--color-bg-primary);
+  background-image: var(--modal-bg-image);
+  background-size: cover;
+  background-position: center;
+  background-color: var(--modal-bg-color);
+  filter: blur(30px) brightness(0.6) saturate(0.7);
+  transform: scale(1.1);
 }
 
 .art-modal__panel {
@@ -924,7 +955,7 @@ body.modal-is-open {
   height: 3rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
-  background: rgba(201, 168, 76, 0.5);
+  background: var(--modal-close-bg);
   color: var(--color-accent);
   cursor: pointer;
   transition:
@@ -933,9 +964,13 @@ body.modal-is-open {
     transform var(--transition-fast);
 }
 
+body.light .art-modal__close{
+  background: var(--color-bg-primary);
+}
+
 .art-modal__close:hover {
   border-color: var(--color-border-accent);
-  background: rgba(201, 168, 76, 0.3);
+  background: var(--modal-close-hover);
   transform: scale(1.03);
 }
 
@@ -961,7 +996,7 @@ body.modal-is-open {
   height: 100vh;
   padding: var(--space-3xl);
   border-right: 1px solid var(--color-border);
-  background: rgba(0, 0, 0, 0.28);
+  background: var(--modal-visual-bg);
 }
 
 .art-modal__image-frame {
@@ -971,7 +1006,7 @@ body.modal-is-open {
   z-index: 99;
   margin: 0;
   padding: var(--space-md);
-  background: rgba(240, 237, 230, 0.06);
+  background: var(--modal-frame-bg);
   box-shadow: var(--shadow-card);
 }
 
@@ -987,6 +1022,9 @@ body.modal-is-open {
 .art-modal__caption {
   max-width: 34ch;
   margin-top: var(--space-md);
+  padding: 5px;
+  padding-top: 8px;
+  border-radius: 6px;
   color: var(--color-text-muted);
   font-size: var(--fs-sm);
   line-height: var(--lh-tight);
@@ -1008,7 +1046,7 @@ body.modal-is-open {
 }
 
 @media (min-width: 500px) {
-  .art-modal__details{
+  .art-modal__details {
     margin-left: 1rem;
   }
 }
@@ -1024,6 +1062,7 @@ body.modal-is-open {
 
 .art-modal__details h2 {
   max-width: 14ch;
+  color: var(--color-text-primary);
   margin-bottom: var(--space-md);
   font-family: var(--font-heading);
   font-size: var(--fs-display);
@@ -1068,7 +1107,7 @@ body.modal-is-open {
   padding: var(--space-lg);
   /* border-left: 1px solid var(--color-accent); */
   border-radius: var(--radius-md);
-  background: rgba(201, 168, 76, 0.06);
+  background: var(--modal-note-bg);
 }
 
 .art-modal__note p {
@@ -1083,7 +1122,7 @@ body.modal-is-open {
   overflow: hidden;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background: rgba(18, 18, 18, 0.38);
+  background: var(--modal-curator-bg);
 }
 
 .art-modal__curator-header {
@@ -1127,7 +1166,7 @@ body.modal-is-open {
   padding: var(--space-md);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background: rgba(0, 0, 0, 0.22);
+  background: var(--modal-message-bg);
 }
 
 .art-modal__curator-message p {
@@ -1163,7 +1202,7 @@ body.modal-is-open {
   text-align: start;
 }
 
-.art-modal__inquiries button:hover{
+.art-modal__inquiries button:hover {
   border-color: var(--color-border-accent);
   box-shadow: var(--shadow-glow);
   color: var(--color-text-primary);
@@ -1180,7 +1219,7 @@ body.modal-is-open {
   padding: var(--space-sm) var(--space-md);
   border: 1px solid var(--color-border-accent);
   border-radius: var(--radius-sm);
-  background: rgba(0, 0, 0, 0.28);
+  background: var(--modal-input-bg);
   color: var(--color-text-secondary);
 }
 
@@ -1191,7 +1230,7 @@ body.modal-is-open {
   width: 2.75rem;
   border: 0;
   border-radius: var(--radius-sm);
-  background: rgba(201, 168, 76, 0.28);
+  background: var(--modal-button-bg);
   color: var(--color-accent);
 }
 
@@ -1297,6 +1336,7 @@ body.modal-is-open {
 
   .art-modal__narrative {
     height: auto;
+    background-color: var(--color-bg-primary);
     overflow: visible;
   }
 
@@ -1363,7 +1403,6 @@ body.modal-is-open {
   }
 }
 
-
 .art-modal {
   /* These vars are set by JS via setModalBackground() */
   --modal-bg-color: #121212;
@@ -1426,7 +1465,6 @@ body.modal-is-open {
   font-size: var(--fs-md);
   width: 100%;
 }
-
 
 /* ============================================================
    PATINA GALLERY — CURATOR BOT LAYOUT STYLES 
@@ -1493,7 +1531,7 @@ body.modal-is-open {
 
 /* User Message: High Contrast alignment floats right */
 .art-modal__chat-bubble--user {
-  background: rgba(240, 237, 230, 0.12); /* Dynamic opacity mapping of var(--color-text-primary) */
+  background: var(--color-chat-user-bg);
   color: var(--color-text-primary);
   border-bottom-right-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
@@ -1532,4 +1570,15 @@ body.modal-is-open {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* ====== ART CARD — IMAGE FADE-IN ================== */
+
+.art-card__img--fade {
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--ease-out-expo);
+}
+
+.art-card__img--fade.art-card__img--loaded {
+  opacity: 1;
 }

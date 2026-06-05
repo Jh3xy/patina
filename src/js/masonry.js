@@ -1,5 +1,3 @@
-
-
 import Masonry from "masonry-layout";
 import { observeCards } from "./script.js";
 
@@ -8,6 +6,7 @@ const DEFAULT_GAP = 24;
 
 let masonryInstance = null;
 let resizeTimer = null;
+let prevWidth = window.innerWidth;
 
 function escapeHtml(value = "") {
   return String(value ?? "")
@@ -17,6 +16,9 @@ function escapeHtml(value = "") {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
+
+// Deterministic placeholder colors — pulled from design token values in variables.css
+const PLACEHOLDER_COLORS = ["#121212", "#1a1a1a", "#242424", "#1e1c18"];
 
 function getArtworkId(artwork) {
   return artwork.id || artwork.source_id || "";
@@ -54,6 +56,7 @@ function createCardMarkup(artwork) {
   const artworkDate = escapeHtml(artwork.artwork_date);
   const imageUrl = escapeHtml(artwork.image_url);
   const dominantColor = escapeHtml(artwork.dominant_color);
+  // const placeholderColor = getPlaceholderColor(artwork.source_id) || null;
 
   return `
     <div
@@ -90,6 +93,24 @@ function renderEmptyState() {
   grid.innerHTML = '<p class="gallery-empty">No artworks found.</p>';
 }
 
+export function renderSkeletons(count = 8) {
+  if (!grid) return;
+
+  destroyMasonry();
+
+  const heights = [320, 200, 280, 240, 360, 180, 300, 220];
+  const skeletons = Array.from({ length: count }, (_, index) => {
+    const height = heights[index % heights.length];
+    return `
+      <div class="art-card art-card--skeleton">
+        <div class="art-card__img skeleton-pulse" style="height:${height}px"></div>
+      </div>
+    `;
+  }).join("");
+
+  grid.innerHTML = skeletons;
+}
+
 function bindImageLayoutUpdates(elements) {
   if (!grid || !masonryInstance) return;
 
@@ -99,6 +120,7 @@ function bindImageLayoutUpdates(elements) {
 
   images.forEach((image) => {
     if (image.complete) {
+      // image.classList.add("art-card__img--loaded");
       masonryInstance.layout();
       return;
     }
@@ -106,6 +128,7 @@ function bindImageLayoutUpdates(elements) {
     image.addEventListener(
       "load",
       () => {
+        // image.classList.add("art-card__img--loaded");
         masonryInstance?.layout();
       },
       { once: true },
@@ -137,9 +160,13 @@ function bindResizeHandler() {
   if (!grid || grid.dataset.resizeBound === "true") return;
 
   window.addEventListener("resize", () => {
+    const currentWidth = window.innerWidth;
+    if (currentWidth === prevWidth) return; // Ignore height-only change to avoid skipping to top on scroll
+    prevWidth = currentWidth;
+
     window.clearTimeout(resizeTimer);
     resizeTimer = window.setTimeout(() => {
-      reinitMasonry();
+      masonryInstance?.layout();
     }, 150);
   });
 
@@ -163,6 +190,7 @@ export function reinitMasonry() {
     gutter: ".gutter-sizer",
     percentPosition: true,
     transitionDuration: "0.25s",
+    resize: false, // kills masonry's internal resize feature since we handle it manually
   });
 
   bindImageLayoutUpdates();

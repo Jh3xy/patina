@@ -1,119 +1,163 @@
-
-
 /* Global CSS variables  */
 
-
 :root {
-/* --- Colors --- */
---color-bg-primary: #121212;
---color-bg-secondary: #1a1a1a;
---color-bg-tertiary: #242424;
---color-bg-overlay: rgba(10, 10, 10, 0.95);
+  /* --- Colors --- */
+  --color-bg-primary: #121212;
+  --color-bg-secondary: #1a1a1a;
+  --color-bg-tertiary: #242424;
+  --color-bg-overlay: rgba(10, 10, 10, 0.95);
 
---color-text-primary: #F0EDE6;
---color-text-secondary: rgba(240, 237, 230, 0.70);
---color-text-muted: rgba(240, 237, 230, 0.40);
+  --color-text-primary: #f0ede6;
+  --color-text-secondary: rgba(240, 237, 230, 0.7);
+  --color-text-muted: rgba(240, 237, 230, 0.4);
 
---color-accent: #C9A84C;
---color-accent-hover: #bda043;
---color-accent-subtle: rgba(201, 168, 76, 0.08);
---color-border: rgba(240, 237, 230, 0.08);
---color-border-accent: rgba(201, 168, 76, 0.40);
---color-overlay: rgba(0, 0, 0, 0.60);
+  --color-accent: #c9a84c;
+  --color-accent-hover: #bda043;
+  --color-accent-subtle: rgba(201, 168, 76, 0.08);
+  --color-border: rgba(240, 237, 230, 0.08);
+  --color-border-accent: rgba(201, 168, 76, 0.4);
+  --color-overlay: rgba(0, 0, 0, 0.6);
 
---color-success: #3ef0a1;
---color-error: #f05a5a;
---color-warning: #f0c95a;
+  --color-success: #3ef0a1;
+  --color-error: #f05a5a;
+  --color-warning: #f0c95a;
 
+  /* --- Typography --- */
+  --font-heading: "Gambetta", Georgia, serif;
+  --font-body: "Satoshi", system-ui, -apple-system, sans-serif;
 
-/* --- Typography --- */
---font-heading: 'Gambetta', Georgia, serif;
---font-body: 'Satoshi', system-ui, -apple-system, sans-serif;
+  --fs-xs: 0.6875rem;
+  --fs-sm: 0.8125rem;
+  --fs-base: 1rem;
+  --fs-md: 1.125rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.5rem;
+  --fs-2xl: 2rem;
+  --fs-3xl: 2.5rem;
+  --fs-4xl: 3.5rem;
+  --fs-display: 4.5rem;
 
---fs-xs: 0.6875rem;
---fs-sm: 0.8125rem;
---fs-base: 1rem;
---fs-md: 1.125rem;
---fs-lg: 1.25rem;
---fs-xl: 1.5rem;
---fs-2xl: 2rem;
---fs-3xl: 2.5rem;
---fs-4xl: 3.5rem;
---fs-display: 4.5rem;
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
 
+  --lh-tight: 1.15;
+  --lh-normal: 1.5;
+  --lh-relaxed: 1.7;
 
---fw-light: 300;
---fw-regular: 400;
---fw-medium: 500;
---fw-semibold: 600;
---fw-bold: 700;
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.12em;
 
---lh-tight: 1.15;
---lh-normal: 1.5;
---lh-relaxed: 1.7;
+  /* --- Spacing --- */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+  --space-4xl: 6rem;
+  --space-5xl: 8rem;
 
---letter-spacing-tight: -0.02em;
---letter-spacing-normal: 0em;
---letter-spacing-wide: 0.12em;
+  /* --- Layout --- */
+  --layout-max-width: 80rem;
+  --layout-prose-width: 45rem;
+  --layout-wide-width: 90rem;
+  --layout-navbar-height: 4.5rem;
+  --layout-panel-width: 31.25rem;
+  --layout-grid-gap: 1.5rem;
 
+  /* --- Borders and Radii --- */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-full: 9999px;
 
-/* --- Spacing --- */
---space-xs: 0.25rem;
---space-sm: 0.5rem;
---space-md: 1rem;
---space-lg: 1.5rem;
---space-xl: 2rem;
---space-2xl: 3rem;
---space-3xl: 4rem;
---space-4xl: 6rem;
---space-5xl: 8rem;
+  /* --- Shadows --- */
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 20px 50px rgba(0, 0, 0, 0.8);
+  --shadow-glow: 0 0 12px rgba(201, 168, 76, 0.25);
 
+  /* --- Transitions --- */
+  --duration-fast: 0.2s;
+  --duration-normal: 0.4s;
+  --duration-slow: 0.8s;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --transition-fast: var(--duration-fast) var(--ease-standard);
+  --transition-normal: var(--duration-normal) var(--ease-out-expo);
+  --transition-slow: var(--duration-slow) var(--ease-out-expo);
 
-/* --- Layout --- */
---layout-max-width: 80rem;
---layout-prose-width: 45rem;
---layout-wide-width: 90rem;
---layout-navbar-height: 4.5rem;
---layout-panel-width: 31.25rem;
---layout-grid-gap: 1.5rem;
+  /* --- Z-Index Scale --- */
+  --z-base: 1;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
 
+  /* --- Opacity --- */
+  --opacity-muted: 0.6;
+  --opacity-subtle: 0.4;
+  --opacity-disabled: 0.3;
 
-/* --- Borders and Radii --- */
---radius-sm: 0.25rem;
---radius-md: 0.5rem;
---radius-lg: 0.75rem;
---radius-full: 9999px;
+  /* --- Translucent Surface Tint --- */
+  --color-bg-translucent: rgba(18, 18, 18, 0.85);
 
+  --color-chat-user-bg: rgba(240, 237, 230, 0.12);
+  --modal-close-bg: rgba(201, 168, 76, 0.28);
+  --modal-close-hover: rgba(201, 168, 76, 0.18);
+  --modal-visual-bg: rgba(0, 0, 0, 0.28);
+  --modal-frame-bg: rgba(240, 237, 230, 0.06);
+  --modal-note-bg: rgba(240, 237, 230, 0.06);
+  --modal-curator-bg: rgba(18, 18, 18, 0.38);
+  --modal-message-bg: rgba(0, 0, 0, 0.22);
+  --modal-input-bg: rgba(0, 0, 0, 0.28);
+  --modal-button-bg: rgba(201, 168, 76, 0.28);
+}
 
-/* --- Shadows --- */
---shadow-card: 0 4px 20px rgba(0, 0, 0, 0.40);
---shadow-modal: 0 20px 50px rgba(0, 0, 0, 0.80);
---shadow-glow: 0 0 12px rgba(201, 168, 76, 0.25);
+/* ============================================================\
+   LIGHT MODE ALTERNATIVE (Gallery Stone Palette)
+   ============================================================ */
 
+body.light {
+  /* --- Backgrounds --- */
+  --color-bg-primary: #fbfbf9;
+  --color-bg-secondary: #f5f3ef;
+  --color-bg-tertiary: #eae6df;
+  --color-bg-overlay: rgba(251, 251, 249, 0.95);
 
-/* --- Transitions --- */
---duration-fast: 0.2s;
---duration-normal: 0.4s;
---duration-slow: 0.8s;
---ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
---ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
---ease-in: cubic-bezier(0.4, 0, 1, 1);
---transition-fast: var(--duration-fast) var(--ease-standard);
---transition-normal: var(--duration-normal) var(--ease-out-expo);
---transition-slow: var(--duration-slow) var(--ease-out-expo);
+  /* --- Typography (Ink/Charcoal tones) --- */
+  --color-text-primary: #1c1b18;
+  --color-text-secondary: rgba(28, 27, 24, 0.72);
+  --color-text-muted: rgba(28, 27, 24, 0.42);
 
+  /* --- Accents & Borders --- */
+  --color-accent: #b59436;
+  --color-accent-hover: #a1822f;
+  --color-accent-subtle: rgba(181, 148, 54, 0.06);
+  --color-border: rgba(28, 27, 24, 0.08);
+  --color-border-accent: rgba(181, 148, 54, 0.25);
+  --color-overlay: rgba(28, 27, 24, 0.35);
 
-/* --- Z-Index Scale --- */
---z-base: 1;
---z-dropdown: 100;
---z-sticky: 200;
---z-overlay: 300;
---z-modal: 400;
---z-toast: 500;
+  /* --- Shadows --- */
+  --shadow-card: 0 10px 30px rgba(28, 27, 24, 0.06);
 
+  /* --- Light Translucent Tint --- */
+  --color-bg-translucent: rgba(251, 251, 249, 0.85);
 
-/* --- Opacity --- */
---opacity-muted: 0.60;
---opacity-subtle: 0.40;
---opacity-disabled: 0.30;
+  --color-chat-user-bg: rgba(28, 27, 24, 0.08);
+  --modal-close-bg: rgba(201, 168, 76, 0.18);
+  --modal-close-hover: rgba(201, 168, 76, 0.12);
+  --modal-visual-bg: rgba(255, 255, 255, 0.45);
+  --modal-frame-bg: rgba(255, 255, 255, 0.82);
+  --modal-note-bg: rgba(28, 27, 24, 0.06);
+  --modal-curator-bg: rgba(251, 251, 249, 0.92);
+  --modal-message-bg: rgba(251, 251, 249, 0.75);
+  --modal-input-bg: rgba(251, 251, 249, 0.9);
+  --modal-button-bg: rgba(181, 148, 54, 0.18);
 }
